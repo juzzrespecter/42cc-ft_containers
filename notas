@@ -1,0 +1,15 @@
+
+* reverse_iterator de momento solo acepta iteradores de acceso aleatorio, los iteratores de tree son bidireccionales ( sin operadores +, -, [] )
+* iteradores de tree no tienen convertion iterator -> const_iterator
+* checkear tambien conversion iterator -> const en vector ( y que el inverso const -> it no se produzca )
+* max_size en map y set no dan mismo output que en std
+* erase( iterator ) en map, set trabajan con el propio iterador pasasdo como argumento
+  si recibe un iterador de otro mapa distinto, trabaja con ese puntero al nodo ( comportamiento indefinido )
+* check en llamada a erase( iteradores ) a que erase con un solo parametro llama
+* insert w/ hint 'por lo menos' derreferencia el iterador pasado como argumento
+* std::swap overload para cada contenedor, y de paso sintaxis de las especialiaciones para templates
+* ' cannot assign to non-static data member 'first' with const-qualified type 'const char' '
+
+* testear insert with hint
+* validar conversion iterator -> const_iterator, no permitir const_iterator -> iterator
+* TEST = compares con std
