@@ -19,6 +19,7 @@ void indent( int lvl ) {
 int main( void ) {
 
     std::string buff;
+    char*       end_buff_ptr;
 
     srand( time( NULL ) );
 
@@ -45,18 +46,18 @@ int main( void ) {
                   << END;
         while ( 1 ) {
 
-            std::cout << " ( waiting for input... )\n";
+            std::cout << " >> ";
             getline( std::cin, buff );
 
-            int id = std::atoi( buff.c_str( ) );
-            if ( id >= 0 && id < N_C_TESTS ) {
+            int id = strtol( buff.c_str( ), &end_buff_ptr, 0 );
+            if ( !*end_buff_ptr && id >= 0 && id < N_C_TESTS ) {
 
                 container_tests[ id ]( );
                 break ;
             }
-            if ( id == 4 ) {
+            if ( !*end_buff_ptr && id == 4 ) {
                 
-                std::cout << RED << " ( shutting down... )\n" << END;
+                std::cout << GREEN << "bye!\n" << END;
                 return EXIT_SUCCESS;
             }
         }

@@ -35,22 +35,20 @@ class _tree_iterator {
 		typedef typename ft::iterator_traits< T >::pointer			pointer;
 		typedef typename ft::iterator_traits< T >::reference		reference;
 
-		explicit _tree_iterator( Node* current_node = NULL, 
-							     Node** root_addr = NULL ) :
+		explicit _tree_iterator( Node* 		 current_node = NULL, 
+							     Node*const* root_addr = NULL ) :
 			_current_node( current_node ), _root_addr( root_addr ) { }
 
 		_tree_iterator( const _tree_iterator& other ) { 
 
-			std::cout << "copy same it\n";
 			_current_node = other.base( );
 			_root_addr = other.root( );
 		}
 
 		template< class U >
-		_tree_iterator( const _tree_iterator< Node, U >& other, 
-						typename ft::enable_if< !ft::is_const< U >::value, U >::type const_switch = NULL ) {
+		_tree_iterator( const _tree_iterator< Node, U* >& other, 
+						typename ft::enable_if< !ft::is_const< U >::value, U >::type* const_switch = NULL ) {
  
-			std::cout << "cast non const -> const\n";
 			( void )const_switch;
 			_current_node = other.base( );
 			_root_addr = other.root( );
@@ -109,6 +107,7 @@ class _tree_iterator {
 
 				_current_node = _current_node->parent;
 			}
+			_current_node = _current_node->parent;
 			return *this;
 		}
 
@@ -131,12 +130,12 @@ class _tree_iterator {
 
 		friend bool operator!=( const _tree_iterator& lhs, const _tree_iterator& rhs ) { return !( lhs == rhs ); }
 
-		Node*	base( void ) const { return _current_node; }
-		Node** 	root( void ) const { return _root_addr; }
+		Node*			base( void ) const { return _current_node; }
+		Node*const* 	root( void ) const { return _root_addr; }
 
 	private:
-		Node*	_current_node;
-		Node**	_root_addr;
+		Node*		_current_node;
+		Node*const*	_root_addr;
 };
 
 template< class T,
@@ -163,13 +162,9 @@ class _tree {
 			_tree_root( ), _tree_size( ), _tree_comp( comp ), _tree_alloc( alloc ) { }
 
 		_tree( const _tree& other ) :
+			_tree_root( ), _tree_size( ), _tree_comp( other._tree_comp ), _tree_alloc( other._tree_alloc ) {
 
-			_tree_root( ),
-			_tree_size( ),
-			_tree_comp( other._tree_comp ),
-			_tree_alloc( other._tree_alloc ) {
-
-				*this = other;
+			*this = other;
 		}
 
 		~_tree( ) {
@@ -236,6 +231,7 @@ class _tree {
 
 			_delete_tree( root( ) );
 			_tree_root = NULL;
+			_tree_size = 0;
 		}
 
 		ft::pair< iterator, bool >	insert( const value_type& value ) {
@@ -276,13 +272,13 @@ class _tree {
 			if ( *hint == value ) return hint;
 			if ( ++hint == end( ) && value_comp( )( *( --end( ) ), value ) ) {
 
-				n = _new_node( --end( ).base( ), value );
+				n = _new_node( ( --end( ) ).base( ), value );
 				_insert_node_rb( n );
 				return iterator( n, &_tree_root );
 			}
 			if ( value_comp( )( *hint, value ) && value_comp( )( value, *( ++iterator( hint ) ) ) ) {
 
-				n = _new_node( _find_in_subtree( hint.base( ) ), value );
+				n = _new_node( _find_in_subtree( hint.base( ), value ), value );
 				_insert_node_rb( n );
 				return iterator( n, &_tree_root );
 			}
@@ -294,7 +290,7 @@ class _tree {
 
 			iterator	it = find( value );
 
-			if ( it == end( ) || *it != value ) return ERASE_FAIL;
+			if ( it == end( ) || value_comp( )( *it, value ) || value_comp( )( value, *it ) ) return ERASE_FAIL;
 			erase( it );
 			return ERASE_SUCCESS;
 		}
@@ -314,7 +310,7 @@ class _tree {
 				iterator	aux_swap_it( it );
 
 				aux_swap_it++;
-				*it = *aux_swap_it;
+				*( it.base( ) ) = *( aux_swap_it.base( ) );
 				it++;
 			}
 			_delete_node_cases( it.base( ) );
@@ -335,6 +331,12 @@ class _tree {
 
 			node	*n = _find_in_subtree( _tree_root, value );
 			return iterator( n, &_tree_root );
+		}
+
+		const_iterator find( const value_type& value ) const {
+
+			node	*n = _find_in_subtree( _tree_root, value );
+			return const_iterator( n, &_tree_root );
 		}
 
 		node* root( void ) const { 
@@ -391,7 +393,7 @@ class _tree {
 
 		/* **************************** FIND NODE FUNCTIONS ****************************** */
 
-		node*	_find_in_subtree( node* subt_root, const value_type& value ) {
+		node*	_find_in_subtree( node* subt_root, const value_type& value ) const {
 
 			if ( !subt_root ) return NULL;
 			node*	next_subt_root;
@@ -696,7 +698,7 @@ class _tree {
 
 		node* far_child_of( node* node ) const { return ( sibling_of( node )->child[ !whoami( node ) ] ); }
 
-		int	 is_color( node* node_to_check ) {
+		int	 is_color( node* node_to_check ) const {
 
 			if ( !node_to_check || node_to_check->color( ) == black ) return black;
 			return ( red );
@@ -744,7 +746,7 @@ bool operator==( const ft::_tree< T, Compare, Alloc >& lhs,
 
 	if ( lhs.size( ) != rhs.size( ) ) return false;
 
-	return ft::equal( lhs.begin( ), lhs.end( ), rhs.begin( ), rhs.end( ), lhs.value_comp( ) );
+	return ft::equal( lhs.begin( ), lhs.end( ), rhs.begin( ), lhs.value_comp( ) );
 }
 
 template< class T, class Compare, class Alloc >

@@ -60,7 +60,7 @@ class _vector_iterator {
 
 		/* copy constructor: iterator -> const_iterator, filters reverse conversion */
 		template< class U >
-		_vector_iterator( const _vector_iterator< U >& other,
+		_vector_iterator( const _vector_iterator< U* >& other,
 						  typename ft::enable_if< !ft::is_const< U >::value, U >::type* const_switch = NULL ) : 
 			_vector_ptr( other.base( ) ), _offs( 0 ) { ( void )const_switch; }
 

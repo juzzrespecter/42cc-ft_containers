@@ -5,6 +5,13 @@
 #include "set.hpp"
 #include "stack.hpp"
 #include "vector.hpp"
+
+#include <map>
+#include <set>
+#include <stack>
+#include <vector>
+#include <string>
+#include <sstream>
 #include <unistd.h>
 
 #define N_TESTS 5
@@ -58,15 +65,36 @@ struct node_printer {
 };
 
 template< class Value >
-void print_value( Value val ) {
+std::string value( Value val ) {
 
-    std::cout << val <<  " ";
+    std::stringstream   ss;
+    std::string         str_value;
+
+    ss << val << " ";
+    std::getline( ss, str_value );
+    return str_value;
 }
 
 template< class Key, class Value >
-void print_value( ft::pair< Key, Value > val ) {
+std::string value( ft::pair< Key, Value > val ) {
 
-    std::cout << " ( " << val.first << ", " << val.second << " ) ";
+    std::stringstream   ss;
+    std::string         str_value;
+
+    ss << " <" << val.first << ", " << val.second << "> ";
+    std::getline( ss, str_value );
+    return str_value;
+}
+
+template< class Key, class Value >
+std::string value( std::pair< Key, Value > val ) {
+
+    std::stringstream   ss;
+    std::string         str_value;
+
+    ss << " <" << val.first << ", " << val.second << "> ";
+    std::getline( ss, str_value );
+    return str_value;
 }
 
 template< class Iterator >
@@ -78,7 +106,7 @@ void iterator_loop( Iterator begin, Iterator end ) {
         return ;
     }
     std::cout << " [ ";
-    for ( ; begin != end; begin++ ) print_value( *begin );
+    for ( ; begin != end; begin++ ) std::cout << value( *begin );
     std::cout << "]\n";
 }
 

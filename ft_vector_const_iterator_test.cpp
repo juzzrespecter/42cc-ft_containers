@@ -33,26 +33,39 @@ struct is_const : public ft::false_type { };
 template< class T >
 struct is_const< const T > : public ft::true_type { };
 
-template< class T >
+template< class S, class T >
 class A {
 
     T   val;
+    S   otherVal;
     public:
-        A( void ) { std::cout << "DefaultConstructor\n"; }
-        A( const A& other ) { std::cout << "CopyConstructor\n"; }
+        A( void ) : val( ) { std::cout << "DefaultConstructor\n"; }
+        A( const A& other ) : val( other.getVal( ) ) { std::cout << "CopyConstructor\n"; }
+
+        const T& getVal( void ) const { return val; }
         
         template< class U >
-        A( const A< U >& other,
-           typename enable_if< !is_const< T >::value, T >::type* switch = NULL ) { std::cout << "nonConst-to-ConstCopyConstructor\n"; }
+        A( const A< S, U* >& other,
+           typename enable_if< !is_const< U >::value, U >::type* value = NULL ) : val( other.getVal( ) )
+           { std::cout << "nonConst-to-ConstCopyConstructor\n"; }
 
 };
 
 int main( void ) {
 
-    A <int>a;
-    A <const int> a_const;
+    A <char, int* >a;
+    A <char, const int* > a_const;
 
-    A <int> b( a_const );
-    A <const int> b_2( a );
+    A <char, int* > b( a_const );
+    A <char, const int* > b_2( a );
+
+    ft::vector< int >::iterator it;
+    ft::vector< int >::const_iterator const_it;
+
+    it = const_it;
+    const_it = it;
+
+    it = it;
+    const_it = const_it;
 
 }

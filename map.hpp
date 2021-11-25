@@ -169,30 +169,30 @@ class map {
 
 		mapped_type& operator[]( const key_type& key ) {
 
-			value_type	key_value( key, mapped_type( ) );
+			value_type	value( key, mapped_type( ) );
 			
-			ft::pair< iterator, bool > insert_ret = _map_tree.insert( key_value );
+			ft::pair< iterator, bool > insert_ret = _map_tree.insert( value );
 			return insert_ret.first->second;
 		}
 
 		mapped_type& at( const key_type& key ) {
 
-			value_type	key_value( key, mapped_type( ) );
+			value_type	value( key, mapped_type( ) );
 
-			iterator	found_it = _map_tree.find( key_value );
-			if ( found_it == end( ) ) throw( std::out_of_range( what_range ) );
-			if ( value_comp( ) ( *found_it, key_value ) || 
-				 value_comp( ) ( key_value, *found_it ) ) throw( std::out_of_range( what_range ) );
-			return found_it->second;
+			iterator	it = _map_tree.find( value );
+			if ( it == end( ) ) throw( std::out_of_range( what_range ) );
+			if ( value_comp( ) ( *it, value ) || 
+				 value_comp( ) ( value, *it ) ) throw( std::out_of_range( what_range ) );
+			return it->second;
 		}
 
 		const mapped_type& at( const key_type& key ) const {
 
-			value_type		key_value( key, mapped_type( ) );
-			const_iterator	found_it = _map_tree.find( key_value );
+			value_type		value( key, mapped_type( ) );
+			const_iterator	it = _map_tree.find( value );
 
-			if ( found_it == end( ) || *found_it != key_value ) throw( std::out_of_range( what_range ) );
-			return found_it->second;
+			if ( it == end( ) || *it != value ) throw( std::out_of_range( what_range ) );
+			return it->second;
 		}
 
 		ft::pair< iterator, bool > insert( const value_type& val ) {
@@ -221,9 +221,9 @@ class map {
 
 		size_type erase( const key_type& key ) {
 
-			ft::pair< key_type, value_type > key_value( key, mapped_type( ) );
+			value_type	value( key, mapped_type( ) );
 
-			return _map_tree.erase( key_value );
+			return _map_tree.erase( value );
 		}
 	
 		void erase( iterator first, iterator last ) {
@@ -257,64 +257,64 @@ class map {
 		iterator find( const key_type& k ) {
 
             if ( !size( ) ) return end( );
-			value_type	key_value( k, mapped_type( ) );
-			iterator	found_it = _map_tree.find( key_value );
+			value_type	value( k, mapped_type( ) );
+			iterator	it = _map_tree.find( value );
 
-			return ( *found_it == key_value ? found_it : end( ) );
+			return ( !value_comp( )( *it, value ) && !value_comp( )( value, *it ) ) ? it : end( );
 		}
 
 		const_iterator find( const key_type& k ) const {
 
             if ( !size( ) ) return end( );
-			value_type		key_value( k, mapped_type( ) );
-			const_iterator	found_it = _map_tree.find( key_value );
+			value_type		value( k, mapped_type( ) );
+			const_iterator	it = _map_tree.find( value );
 
-			return ( *found_it == key_value ? found_it : end( ) );
+			return ( !value_comp( )( *it, value ) && !value_comp( )( value, *it ) ) ? it : end( );		
 		}
 
 		size_type count( const key_type& k ) const {
 
             if ( !size( ) ) return 0;
-			value_type	key_value( k, mapped_type( ) );
-			iterator	found_it = _map_tree.find( key_value );
+			value_type		value( k, mapped_type( ) );
+			const_iterator	it = _map_tree.find( value );
 
-			return ( *found_it == key_value ? 1 : 0 );
+			return ( !value_comp( )( *it, value ) && !value_comp( )( value, *it ) ) ? 1 : 0;
 		}
 
 		iterator lower_bound( const key_type& k ) {
 
             if ( !size( ) ) return end( );
-			value_type	key_value( k, mapped_type( ) );
-			iterator	found_it = _map_tree.find( key_value );
+			value_type	value( k, mapped_type( ) );
+			iterator	it = _map_tree.find( value );
 
-			return ( *found_it < key_value ) ? ++found_it : found_it;
+			return value_comp( )( *it, value ) ? ++it : it;
 		}
 
 		const_iterator lower_bound( const key_type& k ) const {
 
             if ( !size( ) ) return end( );
-			value_type		key_value( k, mapped_type( ) );
-			const_iterator	found_it = _map_tree.find( key_value );
+			value_type		value( k, mapped_type( ) );
+			const_iterator	it = _map_tree.find( value );
 
-			return ( *found_it < key_value ) ? ++found_it : found_it;
+			return value_comp( )( *it, value ) ? ++it : it;
 		}
 
 		iterator upper_bound( const key_type& k ) {
 
 			if ( !size( ) ) return end( );
-			value_type	key_value( k, mapped_type( ) );
-			iterator	found_it = _map_tree.find( key_value );
+			value_type	value( k, mapped_type( ) );
+			iterator	it = _map_tree.find( value );
 
-			return ( *found_it <= key_value ) ? ++found_it : found_it;
+			return !value_comp( )( value, *it ) ? ++it : it;
 		}
 
 		const_iterator upper_bound( const key_type& k ) const {
 
 			if ( !size( ) ) return end( );
-			value_type		key_value( k, mapped_type( ) );
-			const_iterator	found_it = _map_tree.find( key_value );
+			value_type		value( k, mapped_type( ) );
+			const_iterator	it = _map_tree.find( value );
 
-			return ( *found_it <= key_value ) ? ++found_it : found_it;
+			return !value_comp( )( value, *it ) ? ++it : it;
 		}
 
 		ft::pair< iterator, iterator > equal_range( const key_type& k ) {

@@ -35,20 +35,19 @@ class node {
 		node* 		parent;
 		node* 		child[2];
 
-		node( const value_type& value = value_type( ),
-			  const value_compare& comp = value_compare( ),
-			  const allocator_type& alloc = allocator_type( ) ) :
-
-			parent( ),
-			child( ),
-			node_comp( comp ),
-			node_value( value ),
-			node_color( red ),
-			node_alloc( alloc ) {
+		node(	const value_type& value = value_type( ),
+			  	const value_compare& comp = value_compare( ),
+			  	const allocator_type& alloc = allocator_type( ) ) : 
+			parent( ), 
+			child( ), 
+			node_comp( comp ),	
+			node_value( value ), 
+			node_color( red ),	
+			node_alloc( alloc ) { 
 
 		}
-		node( const node& other ) : 
-		
+
+		node(	const node& other ) : 
 			parent( ), 
 			child( ), 
 			node_comp( other.node_comp ),
@@ -57,6 +56,7 @@ class node {
 			node_alloc( other.node_alloc ) {
 
 		}
+
 		node& operator=( const node& other ) {
 
 			if ( this == &other ) return *this;
@@ -66,6 +66,7 @@ class node {
 			node_alloc.construct( &node_value, other.node_value );
 			return *this;
 		}
+
 		~node( ) { 
 
 			node_alloc.destroy( &node_value );
