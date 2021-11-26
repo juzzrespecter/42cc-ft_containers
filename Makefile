@@ -19,8 +19,6 @@ HEADER += $(addprefix $(DIR_UTILS),$(UT_HEADER))
 
 DIR_TEST = tester/
 DIR_OBJ = obj/
-DIR_HEADER = headers/
-DIR_UTILS = $(DIR_HEADER)utils/
 SRC_TEST = tester.cpp \
 		   tester_vector_functions.cpp \
 		   tester_stack_functions.cpp \
@@ -28,7 +26,7 @@ SRC_TEST = tester.cpp \
 		   tester_set_functions.cpp 
 #		   subject_main.cpp
 OBJ_TEST = $(patsubst %.cpp, $(DIR_OBJ)%.o, $(SRC_TEST))
-HEADER_TEST = $(DIR_TEST)test.hpp
+HEADER_TEST = $(DIR_TEST)tester.hpp
 
 NAME = stlft.a
 TEST = containers_test
@@ -45,16 +43,16 @@ $(NAME):	$(OBJ) $(HEADER)
 
 test:	$(TEST)
 
-$(TEST):	$(NAME) $(OBJ_TEST)
+$(TEST):	$(NAME) $(OBJ_TEST) $(HEADER_TEST)
 	$(CXX) $(CXXFLAGS) -o $(TEST) $(OBJ_TEST) $(NAME)
 
-$(DIR_OBJ)%.o:	$(SRC) $(HEADER)
-	$(CXX) $(CXXFLAGS) -c $(SRC)
+$(DIR_OBJ)%.o: $(DIR_TEST)%.cpp
+	$(CXX) $(CXXFLAGS) -c $< -I
 	mkdir -p $(DIR_OBJ)
 	mv $(@F) $(DIR_OBJ)
 
-$(DIR_OBJ)%.o:	$(DIR_TEST)%.cpp $(HEADER_TEST)
-	$(CXX) $(CXXFLAGS) -c $< -I.
+$(DIR_OBJ)%.o:	$(SRC) $(HEADER)
+	$(CXX) $(CXXFLAGS) -c $(SRC)
 	mkdir -p $(DIR_OBJ)
 	mv $(@F) $(DIR_OBJ)
 

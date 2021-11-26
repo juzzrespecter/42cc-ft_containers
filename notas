@@ -6,4 +6,4 @@
 
 * testear insert with hint
 * TEST = compares con std
-* std::addressof forma parte de C++11
+* floating point exception en el test insert de vector

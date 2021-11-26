@@ -1,10 +1,10 @@
 #ifndef __TEST_HPP__
 #define __TEST_HPP__
 
-#include "map.hpp"
-#include "set.hpp"
-#include "stack.hpp"
-#include "vector.hpp"
+#include "../headers/map.hpp"
+#include "../headers/set.hpp"
+#include "../headers/stack.hpp"
+#include "../headers/vector.hpp"
 
 #include <map>
 #include <set>
@@ -12,10 +12,14 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <iostream>
 #include <unistd.h>
 
 #define N_TESTS 5
 #define N_C_TESTS 4
+#define N_V_TESTS 6
+#define N_S_TESTS 5
+#define N_TEST_USER 5
 
 #define RED "\033[31m"
 #define GREEN "\033[32m"
@@ -40,9 +44,9 @@ void print_tree_recursion( Node* n, Print print_node, int lvl ) {
     }
 
     print_node( *n );
-    print_tree_recursion( n->child[ ft::left ], lvl + 1 );
+    print_tree_recursion( n->child[ ft::LEFT ], lvl + 1 );
     std::cout << "\n"; indent( lvl + 1 );
-    print_tree_recursion( n->child[ ft::right ], lvl + 1 );
+    print_tree_recursion( n->child[ ft::RIGHT ], lvl + 1 );
 }
 
 template < class Iterator, class Print >
@@ -122,5 +126,12 @@ void rev_iterator_loop( It begin, It end ) {
     for ( ; begin != end; --end ) print_value( *end );
     std::cout << "]\n";
 }
+
+// print header
+void header( std::string FUNC_NAME );
+
+// choose test
+
+// get input
 
 #endif

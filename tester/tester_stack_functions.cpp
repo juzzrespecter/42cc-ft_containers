@@ -1,5 +1,4 @@
-#include "test.hpp"
-#define N_S_TESTS 5
+#include "tester.hpp"
 
 static std::string buff;
 
@@ -51,7 +50,7 @@ void stack_test( void ) {
                   << END;
         while( 1 ) {
     
-            std::cout << RED << "\n( waiting for input... )\n" << END;
+            std::cout << " >> ";
             getline( std::cin, buff );
 
             int id = strtol( buff.c_str( ), &end_buff_ptr, 0 );

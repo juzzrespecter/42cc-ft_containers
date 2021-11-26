@@ -1,4 +1,4 @@
-#include "test.hpp"
+#include "tester.hpp"
 #define N_M_TESTS 8
 #define N_LOOP 10
 
@@ -281,9 +281,7 @@ void map_observers_tests( void ) {
               << ", value_comp( v1, v2 ) = " << value_comp( v1, v2 ) << "\n";
 }
 
-void map_compare_overloads_tests( void ) { /* placeholder */ 
-
-    std::cout << std::boolalpha;
+void map_compare_overloads_tests( void ) {
 
     map m;
     std::cout << "1. "; init_map( m );
@@ -339,7 +337,7 @@ void map_test( void ) {
                   << END;
         while ( 1 ) {
 
-            std::cout << "\n( waiting for input... )\n";
+            std::cout << ">> ";
             getline( std::cin, buff );
 
             int id = strtol( buff.c_str( ), &buff_end_ptr, 0 );

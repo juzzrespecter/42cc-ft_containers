@@ -13,6 +13,7 @@
 #ifndef __MAP_HPP__
 #define __MAP_HPP__
 #include <functional>
+#include <string> // error msg when throw exception
 #include <memory>
 #include <limits>
 #include <algorithm>

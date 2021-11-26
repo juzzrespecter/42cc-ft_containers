@@ -15,6 +15,7 @@
 #include "utility.hpp"
 #include "iterator.hpp"
 #include "algorithm.hpp"
+#include "type_traits.hpp"
 #include <limits> // why??
 #include <functional> // why??
 

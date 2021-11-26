@@ -536,12 +536,8 @@ class vector {
 
 		/* insert: by range of iterators */
 		template< class InputIterator >
-			void insert( iterator position, 
-						 InputIterator first, 
-					     typename ft::enable_if< 
-								    !ft::is_integral< InputIterator >::value, 
-							    	InputIterator 
-							>::type last ) { // sfinae magic here!
+			void insert( iterator position, InputIterator first, 
+					     typename ft::enable_if< !ft::is_integral< InputIterator >::value, InputIterator >::type last ) {
 			
 				size_type _n_to_insert = last - first;
 				size_type _offset = position - begin( );

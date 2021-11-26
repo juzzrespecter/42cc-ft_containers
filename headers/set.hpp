@@ -184,7 +184,7 @@ class set {
 
         size_type erase( const key_type& key ) {
 
-            _set_tree.erase( key );
+            return _set_tree.erase( key );
         }
 
         void swap( set& other ) {
@@ -195,25 +195,26 @@ class set {
         size_type count( const key_type& key ) const {
 
             if ( !size( ) ) return 0;
-            iterator    found_it = _set_tree.find( key );
+            const_iterator    it = _set_tree.find( key );
 
-            return ( *found_it == key ? 1 : 0 );
+            return ( !key_comp( )( *it, key ) && !key_comp( )( key, *it ) ) ? 1 : 0;
+            return ( *it == key ? 1 : 0 );
         }
 
         iterator find( const key_type& key ) {
 
             if ( !size( ) ) return end( );
-            iterator    found_it = _set_tree.find( key );
+            iterator    it = _set_tree.find( key );
 
-            return ( *found_it == key ? found_it : end( ) );
+            return ( !key_comp( )( *it, key ) && !key_comp( )( key, *it ) ) ? it : end( );
         }
 
         const_iterator find( const key_type& key ) const {
 
             if ( !size( ) ) return end( );
-            const_iterator    found_it = _set_tree.find( key );
+            const_iterator    it = _set_tree.find( key );
 
-            return ( *found_it == key ? found_it : end( ) );
+            return ( !key_comp( )( *it, key ) && !key_comp( )( key, *it ) ) ? it : end( );
         }
 
         ft::pair< iterator, iterator > equal_range( const key_type& key ) {
@@ -234,34 +235,34 @@ class set {
 
         iterator lower_bound( const key_type& key ) {
 
-            if ( !size( ) ) return 0;
-            iterator	found_it = _set_tree.find( key );
+            if ( !size( ) ) return end( );
+            iterator	it = _set_tree.find( key );
 
-			return  ( *found_it < key ) ? found_it++ : found_it;
+			return  ( *it < key ) ? it++ : it;
         }
 
         const_iterator lower_bound( const key_type& key ) const {
 
-            if ( !size( ) ) return 0;
-            const_iterator	found_it = _set_tree.find( key );
+            if ( !size( ) ) return end( );
+            const_iterator	it = _set_tree.find( key );
 
-			return  ( *found_it < key ) ? found_it++ : found_it;
+			return  ( *it < key ) ? it++ : it;
         }
 
         iterator upper_bound( const key_type& key ) {
 
-            if ( !size( ) ) return 0;
-            iterator	found_it = _set_tree.find( key );
+            if ( !size( ) ) return end( );
+            iterator	it = _set_tree.find( key );
 
-			return  ( *found_it <= key ) ? found_it++ : found_it;
+			return  ( *it <= key ) ? it++ : it;
         }
 
         const_iterator upper_bound( const key_type& key ) const {
 
-            if ( !size( ) ) return 0;
-            const_iterator	found_it = _set_tree.find( key );
+            if ( !size( ) ) return end( );
+            const_iterator	it = _set_tree.find( key );
 
-			return  ( *found_it <= key ) ? found_it++ : found_it;
+			return  ( *it <= key ) ? it++ : it;
         }
 
         key_compare key_comp( void ) const {

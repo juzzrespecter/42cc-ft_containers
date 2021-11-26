@@ -1,17 +1,12 @@
-#include "test.hpp"
+#include "tester.hpp"
 
-void exit_leak( void ) {
-
-    system( "leaks map" );
-}
+void exit_leak( void ) { system( "leaks map" ); }
+void header( std::string FUNC_NAME ) { std::cout << BLUE << "\n [ " << FUNC_NAME << " TEST ]\n\n" << END; }
 
 void indent( int lvl ) {
 
     if ( !lvl ) return ;
-    for ( int i = 0; i + 1 < lvl; i++ ) {
-
-        std::cout << "     " << "     ";
-    }
+    for ( int i = 0; i + 1 < lvl; i++ ) std::cout << "          ";
     std::cout << "     ";
 }
 
@@ -20,6 +15,7 @@ int main( void ) {
 
     std::string buff;
     char*       end_buff_ptr;
+    std::cout << std::boolalpha;
 
     srand( time( NULL ) );
 
@@ -57,7 +53,7 @@ int main( void ) {
             }
             if ( !*end_buff_ptr && id == 4 ) {
                 
-                std::cout << GREEN << "bye!\n" << END;
+                std::cout << GREEN << " bye!\n" << END;
                 return EXIT_SUCCESS;
             }
         }
