@@ -17,15 +17,15 @@ DIR_UTILS  = $(DIR_HEADER)utils/
 HEADER  = $(addprefix $(DIR_HEADER),$(FT_HEADER)) 
 HEADER += $(addprefix $(DIR_UTILS),$(UT_HEADER))  
 
-DIR_TEST = test/
+DIR_TEST = tester/
 DIR_OBJ = obj/
 DIR_HEADER = headers/
 DIR_UTILS = $(DIR_HEADER)utils/
-SRC_TEST = test.cpp \
-		   vector_test.cpp \
-		   stack_test.cpp \
-		   map_test.cpp \
-		   set_test.cpp 
+SRC_TEST = tester.cpp \
+		   tester_vector_functions.cpp \
+		   tester_stack_functions.cpp \
+		   tester_map_functions.cpp \
+		   tester_set_functions.cpp 
 #		   subject_main.cpp
 OBJ_TEST = $(patsubst %.cpp, $(DIR_OBJ)%.o, $(SRC_TEST))
 HEADER_TEST = $(DIR_TEST)test.hpp
