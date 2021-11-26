@@ -2,21 +2,25 @@
 
 SRC = lib_containers_ft.cpp
 OBJ = $(SRC:%.cpp=$(DIR_OBJ)%.o)
-HEADER_CONT = vector.hpp \
-	  		  stack.hpp \
-			  map.hpp \
-			  set.hpp
-HEADER_UTILS = iterator_traits.hpp \
-			   enable_if.hpp \
-			   is_integral.hpp \
-	 		   reverse_iterator.hpp \
-	 		   equal.hpp \
-	  		   lexicographical_compare.hpp \
-			   pair.hpp
-#			   _rb_tree.hpp
+FT_HEADER = vector.hpp \
+	  	    stack.hpp \
+		    map.hpp \
+		    set.hpp
+UT_HEADER = iterator.hpp \
+		    utility.hpp \
+		    algorithm.hpp \
+	 	    type_traits.hpp \
+		    tree.hpp
+DIR_HEADER = ./headers/
+DIR_UTILS  = $(DIR_HEADER)utils/
+
+HEADER  = $(addprefix $(DIR_HEADER),$(FT_HEADER)) 
+HEADER += $(addprefix $(DIR_UTILS),$(UT_HEADER))  
 
 DIR_TEST = test/
 DIR_OBJ = obj/
+DIR_HEADER = headers/
+DIR_UTILS = $(DIR_HEADER)utils/
 SRC_TEST = test.cpp \
 		   vector_test.cpp \
 		   stack_test.cpp \
@@ -36,7 +40,7 @@ CXXFLAGS = -Wall -Werror -Wextra -std=c++98 -g3
 
 all:	$(NAME)
 
-$(NAME):	$(OBJ) $(HEADER_CONT) $(HEADER_UTILS)
+$(NAME):	$(OBJ) $(HEADER)
 	$(AR) $(NAME) $(OBJ)
 
 test:	$(TEST)
@@ -44,7 +48,7 @@ test:	$(TEST)
 $(TEST):	$(NAME) $(OBJ_TEST)
 	$(CXX) $(CXXFLAGS) -o $(TEST) $(OBJ_TEST) $(NAME)
 
-$(DIR_OBJ)%.o:	$(SRC) $(HEADER_CONT) $(HEADER_UTILS)
+$(DIR_OBJ)%.o:	$(SRC) $(HEADER)
 	$(CXX) $(CXXFLAGS) -c $(SRC)
 	mkdir -p $(DIR_OBJ)
 	mv $(@F) $(DIR_OBJ)

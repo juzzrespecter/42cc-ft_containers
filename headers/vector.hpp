@@ -12,18 +12,12 @@
 
 #ifndef __VECTOR_HPP__
 #define __VECTOR_HPP__
-
-#include <iostream>
-
-#include <memory>
+#include <limits>
 #include <stdexcept>
 #include <string>
-#include "equal.hpp"
-#include "iterator_traits.hpp"
-#include "reverse_iterator.hpp"
-#include "lexicographical_compare.hpp"
-#include "enable_if.hpp"
-#include "is_integral.hpp"
+#include "./utils/type_traits.hpp"
+#include "./utils/iterator.hpp"
+#include "./utils/algorithm.hpp"
 
 /*	notes:
  *		size( ) vs. capacity( ) - size contains the number of stored elements, while capacity

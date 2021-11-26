@@ -12,11 +12,11 @@
 
 #ifndef __SET_HPP__
 #define __SET_HPP__
-#include <functional>
+#include <functional> // why??
 #include <algorithm>
 #include <memory>
-#include "tree.hpp"
-#include "reverse_iterator.hpp"
+#include "./utils/tree.hpp"
+#include "./utils/iterator.hpp"
 
 namespace ft {
 

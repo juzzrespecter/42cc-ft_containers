@@ -10,19 +10,134 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ___RB_TREE_HPP__
-#define ___RB_TREE_HPP__
-
-#include "node.hpp"
-#include "pair.hpp"
-#include "equal.hpp"
-#include "lexicographical_compare.hpp"
-#include <functional>
-#include <memory>
+#ifndef __TREE_HPP__
+#define __TREE_HPP__
+#include "utility.hpp"
+#include "iterator.hpp"
+#include "algorithm.hpp"
+#include <limits> // why??
+#include <functional> // why??
 
 namespace ft {
 
 enum { ERASE_FAIL, ERASE_SUCCESS } erase_ret_flags;
+enum { BLACK, RED } color_id;
+enum { LEFT, RIGHT } child_id;
+
+template< class T,
+		  class Compare = std::less< T >,
+		  class Alloc = std::allocator< T > 
+		>
+class node {
+
+	public:
+		typedef T			 value_type;
+		typedef Compare		 value_compare;
+		typedef Alloc		 allocator_type;
+
+		node* 		parent;
+		node* 		child[2];
+
+		node(	const value_type& value = value_type( ),
+			  	const value_compare& comp = value_compare( ),
+			  	const allocator_type& alloc = allocator_type( ) ) : 
+			parent( ), 
+			child( ), 
+			node_comp( comp ),	
+			node_value( value ), 
+			node_color( RED ),	
+			node_alloc( alloc ) { 
+
+		}
+
+		node(	const node& other ) : 
+			parent( ), 
+			child( ), 
+			node_comp( other.node_comp ),
+			node_value( other.node_value ),
+			node_color( other.color( ) ),
+			node_alloc( other.node_alloc ) {
+
+		}
+
+		node& operator=( const node& other ) {
+
+			if ( this == &other ) return *this;
+
+			node_alloc = other.get_allocator( );
+			node_alloc.destroy( &node_value );
+			node_alloc.construct( &node_value, other.node_value );
+			return *this;
+		}
+
+		~node( ) { 
+
+			node_alloc.destroy( &node_value );
+		}
+
+		const int&	color( void ) const { 
+			
+			return node_color; 
+		}
+		void  		recolor( void ) { 
+			
+			node_color = !node_color; 
+		}
+        void  		recolor( int color ) { 
+			
+			node_color = color; 
+		}
+
+		allocator_type	get_allocator( void ) const { 
+			
+			return allocator_type( node_alloc );
+		}
+		value_compare	value_comp( void ) const { 
+			
+			return node_comp; 
+		}
+
+		value_type&	operator* ( void ) { 
+			
+			return node_value;
+		}
+
+		friend bool operator==( const node& lhs, const node& rhs ) {
+
+			return ( !( lhs < rhs ) && !( rhs < lhs ) );
+		}
+
+		friend bool operator!=( const node &lhs, const node &rhs ) {
+
+			return ( !( lhs == rhs ) );
+		}
+
+		friend bool operator<( const node &lhs, const node &rhs ) {
+
+			return ( lhs.value_comp( )( lhs.node_value, rhs.node_value ) );
+		}
+
+		friend bool operator>=( const node &lhs, const node &rhs ) {
+
+			return ( !( lhs < rhs ) );
+		}
+
+		friend bool operator>( const node &lhs, const node &rhs ) {
+
+			return ( lhs.value_comp( )( rhs.node_value, lhs.node_value ) );
+		}
+
+		friend bool operator<=( const node &lhs, const node &rhs ) {
+
+			return ( !( lhs > rhs ) );
+		}
+
+	private:
+		value_compare	node_comp;
+		value_type		node_value;
+		int				node_color;
+		allocator_type	node_alloc;
+};
 
 template< class Node, class T >
 class _tree_iterator {
@@ -66,10 +181,10 @@ class _tree_iterator {
 
 		_tree_iterator&		operator++( void ) {
 
-			if ( _current_node->child[ right ] ) {
+			if ( _current_node->child[ RIGHT ] ) {
 
-				_current_node = _current_node->child[ right ];
-				while ( _current_node->child[ left ] ) _current_node = _current_node->child[ left ];
+				_current_node = _current_node->child[ RIGHT ];
+				while ( _current_node->child[ LEFT ] ) _current_node = _current_node->child[ LEFT ];
 				return *this;
 			}
 			while ( _current_node->parent ) {
@@ -94,13 +209,13 @@ class _tree_iterator {
 			if ( _current_node == NULL ) {
 
 				_current_node = *_root_addr;
-				while ( _current_node->child[ right ] ) _current_node = _current_node->child[ right ];
+				while ( _current_node->child[ RIGHT ] ) _current_node = _current_node->child[ RIGHT ];
 				return *this;
 			}
-			if ( _current_node->child[ left ] ) {
+			if ( _current_node->child[ LEFT ] ) {
 
-				_current_node = _current_node->child[ left ];
-				while ( _current_node->child[ right ] ) _current_node = _current_node->child[ right ];
+				_current_node = _current_node->child[ LEFT ];
+				while ( _current_node->child[ RIGHT ] ) _current_node = _current_node->child[ RIGHT ];
 				return *this;
 			}
 			while ( *_current_node < *_current_node->parent ) {
@@ -120,7 +235,7 @@ class _tree_iterator {
 		}
 
 		reference	operator*( void ) const { return *( *_current_node ); }
-		pointer		operator->( void ) const { return std::addressof( *( *_current_node ) ); }
+		pointer		operator->( void ) const { return &( *( *_current_node ) ); }
 
 		friend bool operator==( const _tree_iterator& lhs, const _tree_iterator& rhs ) {
 
@@ -190,7 +305,7 @@ class _tree {
 
 			node*	first_node = _tree_root;
 
-			while ( first_node && first_node->child[ left ] ) first_node = first_node->child[ left ];
+			while ( first_node && first_node->child[ LEFT ] ) first_node = first_node->child[ LEFT ];
 			return iterator( first_node, &_tree_root );
 		}
 
@@ -198,7 +313,7 @@ class _tree {
 
 			node*	first_node = _tree_root;
 
-			while ( first_node && first_node->child[ left ] ) first_node = first_node->child[ left ];
+			while ( first_node && first_node->child[ LEFT ] ) first_node = first_node->child[ LEFT ];
 			return const_iterator( first_node, &_tree_root );
 		}
 
@@ -401,7 +516,7 @@ class _tree {
 
 			while ( *subt_root != comp_aux ) {
 
-				next_subt_root = subt_root->child[ ( comp_aux < *subt_root ) ? left : right ];
+				next_subt_root = subt_root->child[ ( comp_aux < *subt_root ) ? LEFT : RIGHT ];
 				if ( !next_subt_root ) break ;
 				subt_root = next_subt_root;
 			}
@@ -419,8 +534,8 @@ class _tree {
 		/* 
 		 * ( we are working here with non-inner nodes here )
 		 *
-		 * case 1: node to delete is red, make parent's access to node NULL
-		 * case 2: node to delete is black and has a red child ( red means non-leaf, and other child is leaf ),
+		 * case 1: node to delete is RED, make parent's access to node NULL
+		 * case 2: node to delete is BLACK and has a RED child ( RED means non-leaf, and other child is leaf ),
 		 * 		   recolor child and remove node ( rewrite parent and child's access )
 		 * case 3: check recursive cases 
 		 * 
@@ -434,8 +549,8 @@ class _tree {
 				&_tree::_delete_node_case_2
 			};
 
-			int	id_child = node_ptr->child[ right ] ? right : left;
-			int	id_case = !( node_ptr->color( ) == red );
+			int	id_child = node_ptr->child[ RIGHT ] ? RIGHT : LEFT;
+			int	id_case = !( node_ptr->color( ) == RED );
 
 			if ( id_case ) id_case += !( is_color( node_ptr->child[ id_child ] ) );
 			if ( id_case == 1 ) node_ptr = node_ptr->child[ id_child ];
@@ -458,31 +573,31 @@ class _tree {
 		 * 		F( n ) -> furthest child of sibling to node
 		 * 
 		 * 
-		 * 		case 1: S( n ) is red,
+		 * 		case 1: S( n ) is RED,
 		 * 				swap S and P's colors,
 		 * 				rotate P in node's direction,
 		 * 				then check next case on same node.
-		 * 		case 2: S( n ) is black, F( n ) is red,
+		 * 		case 2: S( n ) is BLACK, F( n ) is RED,
 		 * 				swap S and P's colors,
-		 * 				recolor F black,
+		 * 				recolor F BLACK,
 		 * 				rotate P to node's direction.
-		 * 		case 3: S( n ) is black, F( n ) is black, N( n ) is red,
+		 * 		case 3: S( n ) is BLACK, F( n ) is BLACK, N( n ) is RED,
 		 * 				swap N and S's colors,
 		 * 				rotate S in opposite direction to node,
 		 * 				then call case 4.
-		 * 		case 4: S's entire subtree { S, F, N } is black,
-		 * 				recolor S red,
-		 * 				recolor P black,
-		 * 				check next case in P only if P was already black.
+		 * 		case 4: S's entire subtree { S, F, N } is BLACK,
+		 * 				recolor S RED,
+		 * 				recolor P BLACK,
+		 * 				check next case in P only if P was already BLACK.
 		 * 
-		 * 	src = https://medium.com/analytics-vidhya/deletion-in-red-black-rb-tree-92301e1474ea
+		 * 	src = https://medium.com/analytics-vidhya/deletion-in-RED-BLACK-rb-tree-92301e1474ea
 		 */
 
 		void _delete_node_rb_cases( node* n ) {
 
 			if ( n == root( ) ) {
 
-				n->recolor( black );
+				n->recolor( BLACK );
 				return ;
 			}
 
@@ -494,10 +609,10 @@ class _tree {
 				&_tree::_delete_node_rb_case_4
 			};
 
-			int	case_id = ( sibling_of( n )->color( ) == black );
-			if ( case_id && is_color( far_child_of( n ) ) == black ) {
+			int	case_id = ( sibling_of( n )->color( ) == BLACK );
+			if ( case_id && is_color( far_child_of( n ) ) == BLACK ) {
 
-				case_id += ( is_color( near_child_of( n ) ) == red ) ? 1 : 2;
+				case_id += ( is_color( near_child_of( n ) ) == RED ) ? 1 : 2;
 			}
 
 			( this->*_delete_node_rb_cases_table[ case_id ] )( n );
@@ -528,7 +643,7 @@ class _tree {
 		void	_delete_node_rb_case_1( node* n ) {
 
 			sibling_of( n )->recolor( n->parent->color( ) );
-			n->parent->recolor( red );
+			n->parent->recolor( RED );
 			rotate( n->parent, whoami( n ) );
 			_delete_node_rb_cases( n );
 		}
@@ -536,23 +651,23 @@ class _tree {
 		void	_delete_node_rb_case_2( node* n ) {
 
 			sibling_of( n )->recolor( n->parent->color( ) );
-			n->parent->recolor( black );
-			far_child_of( n )->recolor( black );
+			n->parent->recolor( BLACK );
+			far_child_of( n )->recolor( BLACK );
 			rotate( n->parent, whoami( n ) );
 		}
 
 		void	_delete_node_rb_case_3( node* n ) {
 
-			near_child_of( n )->recolor( black );
-			sibling_of( n )->recolor( red );
+			near_child_of( n )->recolor( BLACK );
+			sibling_of( n )->recolor( RED );
 			rotate( sibling_of( n ), !whoami( n ) );
 			_delete_node_rb_case_4( n );
 		}
 
 		void	_delete_node_rb_case_4( node* n ) {
 
-			sibling_of( n )->recolor( red );
-			if ( n->parent->color( ) == black ) {
+			sibling_of( n )->recolor( RED );
+			if ( n->parent->color( ) == BLACK ) {
 				
 				_delete_node_rb_cases( n->parent );
 			} else {
@@ -587,7 +702,7 @@ class _tree {
 
 			_tree_alloc.construct( node_new, node_value );
 			node_new->parent = node_parent;
-			node_parent->child[ ( *node_new < *node_parent ) ? left : right ] = node_new;
+			node_parent->child[ ( *node_new < *node_parent ) ? LEFT : RIGHT ] = node_new;
 			return node_new;
 		}
 		/* 
@@ -605,19 +720,19 @@ class _tree {
 		 *		U( n ) -> uncle of node
 		 *		G( n ) -> grandparent of node
 		 *
-		 * 		case 1: node is root, change color from red to black
-		 *		case 2: P( n ) is black, tree is balanced, nothing to do
-		 *		case 3: P( n ) and U( n ) are red,
+		 * 		case 1: node is root, change color from RED to BLACK
+		 *		case 2: P( n ) is BLACK, tree is balanced, nothing to do
+		 *		case 3: P( n ) and U( n ) are RED,
 		 *				repaint them, 
 		 *				repaint G( n ) if G != root,
 		 *				recursive call in G( n ) to check if tree is balanced
-		 *		case 4: P( n ) is red, U( n ) is black, and n and P( n ) do not share same child id,
+		 *		case 4: P( n ) is RED, U( n ) is BLACK, and n and P( n ) do not share same child id,
 		 *				rotate P in opposite direction, then call case 5 with old P( n )
-		 *		case 5: P( n ) is red, U( n ) is black, n and P( n ) do share same child id,
+		 *		case 5: P( n ) is RED, U( n ) is BLACK, n and P( n ) do share same child id,
 		 *				rotate G( n ) in opposite direction,
 		 *				recolor P and G
 		 *
-		 * 	src = https://cs.kangwon.ac.kr/~leeck/file_processing/red_black_tree.pdf
+		 * 	src = https://cs.kangwon.ac.kr/~leeck/file_processing/RED_BLACK_tree.pdf
 		 */
 
 		void _insert_node_rb( node* n ) {
@@ -631,15 +746,15 @@ class _tree {
 
 			if ( n == _tree_root ) { /* Case 1 */
 
-				n->recolor( black );
+				n->recolor( BLACK );
 				return ;
 			} 
-			if ( n->parent->color( ) == black ) { /* Case 2 */
+			if ( n->parent->color( ) == BLACK ) { /* Case 2 */
 				
 				return ;
 			}
 
-			int case_id = ( is_color( uncle_of( n ) ) == black );
+			int case_id = ( is_color( uncle_of( n ) ) == BLACK );
 			if ( case_id ) {
 
 				case_id += ( whoami( n ) == whoami( n->parent ) );
@@ -682,9 +797,9 @@ class _tree {
 
 		/******************************* NODE OPERATORS *********************************/
 
-		int whoami( node* me ) const { return ( me->parent->child[ left ] == me ) ? left : right; }
+		int whoami( node* me ) const { return ( me->parent->child[ LEFT ] == me ) ? LEFT : RIGHT; }
 
-		bool is_inner_node( node* n ) const { return ( n->child[ right ] && n->child[ left ] ); }
+		bool is_inner_node( node* n ) const { return ( n->child[ RIGHT ] && n->child[ LEFT ] ); }
 
 		node* parent_of( node* node ) const { return node->parent; }
 
@@ -700,8 +815,8 @@ class _tree {
 
 		int	 is_color( node* node_to_check ) const {
 
-			if ( !node_to_check || node_to_check->color( ) == black ) return black;
-			return ( red );
+			if ( !node_to_check || node_to_check->color( ) == BLACK ) return BLACK;
+			return ( RED );
 		}
 
 		/********************************************************************************/
@@ -719,19 +834,19 @@ class _tree {
 			node* node_new = _tree_alloc.allocate( 1 );
 			_tree_alloc.construct( node_new, *n_cpy );
 
-			node_new->child[ left ] = _copy_tree( n_cpy->child[ left ] );
-			if ( node_new->child[ left ] ) node_new->child[ left ]->parent = node_new;
+			node_new->child[ LEFT ] = _copy_tree( n_cpy->child[ LEFT ] );
+			if ( node_new->child[ LEFT ] ) node_new->child[ LEFT ]->parent = node_new;
 
-			node_new->child[ right ] = _copy_tree( n_cpy->child[ right ] );
-			if ( node_new->child[ right ] ) node_new->child[ right ]->parent = node_new;
+			node_new->child[ RIGHT ] = _copy_tree( n_cpy->child[ RIGHT ] );
+			if ( node_new->child[ RIGHT ] ) node_new->child[ RIGHT ]->parent = node_new;
 			return node_new;
 		}
 
 		void _delete_tree( node* n_del ) {
 
-			if ( n_del->child[ left ] ) _delete_tree( n_del->child[ left ] );
+			if ( n_del->child[ LEFT ] ) _delete_tree( n_del->child[ LEFT ] );
 
-			if ( n_del->child[ right ] ) _delete_tree( n_del->child[ right ] );
+			if ( n_del->child[ RIGHT ] ) _delete_tree( n_del->child[ RIGHT ] );
 
 			_tree_alloc.destroy( n_del );
 			_tree_alloc.deallocate( n_del, 1 );

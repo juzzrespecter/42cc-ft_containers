@@ -1,0 +1,117 @@
+In file included from Vector_tests.cpp:21:
+./../headers/vector.hpp:158:26: error: redefinition of 'operator-'
+                friend difference_type operator-( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
+                                       ^
+Vector_tests.cpp:66:41: note: in instantiation of template class 'ft::_vector_iterator<const int *>' requested here
+        ft::vector<int>::const_iterator c_it, c_ob(my_it);
+                                        ^
+./../headers/vector.hpp:158:26: note: previous definition is here
+                friend difference_type operator-( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
+                                       ^
+./../headers/vector.hpp:164:15: error: redefinition of 'operator=='
+                friend bool operator==( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) { 
+                            ^
+./../headers/vector.hpp:164:15: note: previous definition is here
+./../headers/vector.hpp:170:15: error: redefinition of 'operator<'
+                friend bool operator<( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
+                            ^
+./../headers/vector.hpp:170:15: note: previous definition is here
+./../headers/vector.hpp:176:15: error: redefinition of 'operator!='
+                friend bool operator!=( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) { 
+                            ^
+./../headers/vector.hpp:176:15: note: previous definition is here
+./../headers/vector.hpp:182:15: error: redefinition of 'operator>'
+                friend bool operator>( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
+                            ^
+./../headers/vector.hpp:182:15: note: previous definition is here
+./../headers/vector.hpp:194:15: error: redefinition of 'operator<='
+                friend bool operator<=( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) { 
+                            ^
+./../headers/vector.hpp:194:15: note: previous definition is here
+Vector_tests.cpp:81:33: error: invalid operands to binary expression ('ft::vector<int>::iterator' (aka '_vector_iterator<int *>') and 'ft::vector<int>::iterator')
+    EQUAL((it >= it1) == (my_it >= my_it1));
+                          ~~~~~ ^  ~~~~~~
+Vector_tests.cpp:29:20: note: expanded from macro 'EQUAL'
+#define EQUAL(x) ((x) ? (std::cout << "\033[1;32mAC\033[0m\n") : (std::cout << "\033[1;31mWA\033[0m\n"))
+                   ^
+./../headers/vector.hpp:188:15: note: candidate template ignored: couldn't infer template argument 'T2'
+                friend bool operator>=( const _vector_iterator< T1 >& lhs, const _vector_iterator& rhs ) { 
+                            ^
+./../headers/vector.hpp:693:6: note: candidate template ignored: could not match 'vector' against '_vector_iterator'
+bool operator>=( const vector< T, Alloc >& lhs, const vector< T, Alloc >& rhs ) {
+     ^
+./../headers/vector.hpp:158:26: error: redefinition of 'operator-'
+                friend difference_type operator-( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
+                                       ^
+./../headers/./utils/iterator.hpp:14:20: note: in instantiation of template class 'ft::_vector_iterator<std::__cxx11::basic_string<char> *>' requested here
+                typedef typename Iterator::difference_type      difference_type;
+                                 ^
+./../headers/vector.hpp:223:24: note: in instantiation of template class 'ft::iterator_traits<ft::_vector_iterator<std::__cxx11::basic_string<char> *> >' requested here
+                typedef typename ft::iterator_traits< iterator >::difference_type       difference_type;
+                                     ^
+Vector_tests.cpp:99:33: note: in instantiation of template class 'ft::vector<std::__cxx11::basic_string<char>, std::allocator<std::__cxx11::basic_string<char> > >' requested here
+        ft::vector<std::string> my_v(3, "hello");
+                                ^
+./../headers/vector.hpp:158:26: note: previous definition is here
+                friend difference_type operator-( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
+                                       ^
+./../headers/vector.hpp:164:15: error: redefinition of 'operator=='
+                friend bool operator==( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) { 
+                            ^
+./../headers/vector.hpp:164:15: note: previous definition is here
+./../headers/vector.hpp:170:15: error: redefinition of 'operator<'
+                friend bool operator<( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
+                            ^
+./../headers/vector.hpp:170:15: note: previous definition is here
+./../headers/vector.hpp:176:15: error: redefinition of 'operator!='
+                friend bool operator!=( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) { 
+                            ^
+./../headers/vector.hpp:176:15: note: previous definition is here
+./../headers/vector.hpp:182:15: error: redefinition of 'operator>'
+                friend bool operator>( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
+                            ^
+./../headers/vector.hpp:182:15: note: previous definition is here
+./../headers/vector.hpp:194:15: error: redefinition of 'operator<='
+                friend bool operator<=( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) { 
+                            ^
+./../headers/vector.hpp:194:15: note: previous definition is here
+Vector_tests.cpp:175:33: error: invalid operands to binary expression ('ft::vector<int>::const_iterator' (aka '_vector_iterator<const int *>') and 'ft::vector<int>::const_iterator')
+    EQUAL((it >= it1) == (my_it >= my_it1));
+                          ~~~~~ ^  ~~~~~~
+Vector_tests.cpp:29:20: note: expanded from macro 'EQUAL'
+#define EQUAL(x) ((x) ? (std::cout << "\033[1;32mAC\033[0m\n") : (std::cout << "\033[1;31mWA\033[0m\n"))
+                   ^
+./../headers/vector.hpp:188:15: note: candidate template ignored: couldn't infer template argument 'T2'
+                friend bool operator>=( const _vector_iterator< T1 >& lhs, const _vector_iterator& rhs ) { 
+                            ^
+./../headers/vector.hpp:693:6: note: candidate template ignored: could not match 'vector' against '_vector_iterator'
+bool operator>=( const vector< T, Alloc >& lhs, const vector< T, Alloc >& rhs ) {
+     ^
+./../headers/vector.hpp:158:26: error: redefinition of 'operator-'
+                friend difference_type operator-( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
+                                       ^
+Vector_tests.cpp:194:49: note: in instantiation of template class 'ft::_vector_iterator<const std::__cxx11::basic_string<char> *>' requested here
+        ft::vector<std::string>::const_iterator my_it = my_v.begin();
+                                                ^
+./../headers/vector.hpp:158:26: note: previous definition is here
+                friend difference_type operator-( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
+                                       ^
+./../headers/vector.hpp:164:15: error: redefinition of 'operator=='
+                friend bool operator==( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) { 
+                            ^
+./../headers/vector.hpp:164:15: note: previous definition is here
+./../headers/vector.hpp:170:15: error: redefinition of 'operator<'
+                friend bool operator<( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
+                            ^
+./../headers/vector.hpp:170:15: note: previous definition is here
+./../headers/vector.hpp:176:15: error: redefinition of 'operator!='
+                friend bool operator!=( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) { 
+                            ^
+./../headers/vector.hpp:176:15: note: previous definition is here
+./../headers/vector.hpp:182:15: error: redefinition of 'operator>'
+                friend bool operator>( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
+                            ^
+./../headers/vector.hpp:182:15: note: previous definition is here
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+make: *** [Makefile:17: vector] Error 1

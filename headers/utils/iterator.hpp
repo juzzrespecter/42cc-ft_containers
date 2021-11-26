@@ -1,23 +1,51 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   reverse_iterator.hpp                               :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: danrodri <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/10/17 20:14:05 by danrodri          #+#    #+#             */
-/*   Updated: 2021/10/19 20:34:44 by danrodri         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#ifndef __ITERATOR_HPP__
+#define __ITERATOR_HPP__
 
-#ifndef __REVERSE_ITERATOR_HPP__
-#define __REVERSE_ITERATOR_HPP__
-
-#include "iterator_traits.hpp"
-#include <memory>
+#include <iterator> // for the iterator tags
+#include <cstddef> // for ptrdiff_t definition
 
 namespace ft {
 
+/* takes defined typedefs of Iterator */
+template< class Iterator >
+class iterator_traits {
+
+	public:
+		typedef typename Iterator::difference_type	difference_type;
+		typedef typename Iterator::value_type	  	value_type;
+		typedef typename Iterator::pointer			pointer;
+		typedef typename Iterator::reference			reference;
+		typedef typename Iterator::iterator_category	iterator_category;
+
+};
+
+/* provides typedefs to pointers as iterators */
+template< class T >
+class iterator_traits< T* > {
+
+	public:
+		typedef std::ptrdiff_t					difference_type;
+		typedef T								value_type;
+		typedef T*								pointer;
+		typedef T&								reference;
+		typedef std::random_access_iterator_tag	iterator_category;
+
+};
+
+/* same as above specialization, for const pointers */
+template< class T >
+class iterator_traits< const T* > {
+
+	public:
+		typedef std::ptrdiff_t					difference_type;
+		typedef T								value_type;
+		typedef const T*						pointer;
+		typedef const T&						reference;
+		typedef std::random_access_iterator_tag	iterator_category;
+
+};
+
+/* iterator wrapper, reverses increment / decrement calls */
 template< class Iterator >
 class reverse_iterator {
 
@@ -61,7 +89,7 @@ class reverse_iterator {
 
 		pointer operator->( void ) const {
 
-			return std::addressof( operator*( ) );
+			return &( operator*( ) );
 		}
 
 		reference operator[] ( difference_type n ) const {

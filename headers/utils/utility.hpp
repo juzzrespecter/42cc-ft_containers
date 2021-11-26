@@ -1,19 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   pair.hpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: danrodri <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/10/18 21:28:26 by danrodri          #+#    #+#             */
-/*   Updated: 2021/10/18 21:44:59 by danrodri         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#ifndef __PAIR_HPP__
-#define __PAIR_HPP__
-#include "enable_if.hpp"
-#include "is_integral.hpp"
+#ifndef __UTILITY_HPP__
+#define __UTILITY_HPP__
 
 namespace ft {
 
@@ -83,5 +69,6 @@ ft::pair< T1, T2 > make_pair( T1 x, T2 y ) {
 }
 
 }
+
 
 #endif
