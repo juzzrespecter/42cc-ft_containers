@@ -34,7 +34,7 @@ TEST = containers_test
 RM   = rm -rf
 AR	 = ar rcs
 CXX  = clang++
-CXXFLAGS = -Wall -Werror -Wextra -std=c++98 -g3
+CXXFLAGS = -Wall -Werror -Wextra -std=c++98 -fsanitize=address -g3
 
 all:	$(NAME)
 
@@ -47,7 +47,7 @@ $(TEST):	$(NAME) $(OBJ_TEST) $(HEADER_TEST)
 	$(CXX) $(CXXFLAGS) -o $(TEST) $(OBJ_TEST) $(NAME)
 
 $(DIR_OBJ)%.o: $(DIR_TEST)%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -I
+	$(CXX) $(CXXFLAGS) -c $< -I $(HEADER_TEST)
 	mkdir -p $(DIR_OBJ)
 	mv $(@F) $(DIR_OBJ)
 

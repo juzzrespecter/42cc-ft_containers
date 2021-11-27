@@ -185,7 +185,7 @@ class _vector_iterator {
 		}
 
 		template< class T1, class T2 >
-		friend bool operator>=( const _vector_iterator< T1 >& lhs, const _vector_iterator& rhs ) { 
+		friend bool operator>=( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) { 
 
 			return !( lhs < rhs ); 
 		}

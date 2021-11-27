@@ -291,13 +291,11 @@ class _tree {
 		_tree& operator=( const _tree& other ) { 
 
 			if ( this == &other ) return *this;
-
 			if ( _tree_root != NULL ) {
 
 				_delete_tree( _tree_root );
 			}
 			_tree_root = _copy_tree( other.root( ) );
-			_tree_root->parent = NULL;
 			_tree_size = other.size( );
 			return *this;
 		}
@@ -845,9 +843,10 @@ class _tree {
 
 		void _delete_tree( node* n_del ) {
 
-			if ( n_del->child[ LEFT ] ) _delete_tree( n_del->child[ LEFT ] );
-
-			if ( n_del->child[ RIGHT ] ) _delete_tree( n_del->child[ RIGHT ] );
+			if ( !n_del ) return ;
+			
+			_delete_tree( n_del->child[ LEFT ] );
+			_delete_tree( n_del->child[ RIGHT ] );
 
 			_tree_alloc.destroy( n_del );
 			_tree_alloc.deallocate( n_del, 1 );

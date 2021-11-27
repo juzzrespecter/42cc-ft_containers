@@ -171,7 +171,23 @@ void set_observers_tests( void ) {
 }
 void set_compare_overloads_tests( void ) {
 
-    /* placeholder */
+    set s;
+    std::cout << "1. "; init_set( s );
+
+    set s_2;
+    std::cout << "2. "; init_set( s_2 );
+
+    std::cout << " s_1 == s_2 : " << ( s == s_2 ) << "\n"
+              << " s_1 != s_2 : " << ( s != s_2 ) << "\n"
+              << " s_1 <  s_2 : " << ( s < s_2 )  << "\n"
+              << " s_1 <= s_2 : " << ( s <= s_2 ) << "\n"
+              << " s_1 >  s_2 : " << ( s > s_2 )  << "\n"
+              << " s_1 >= s_2 : " << ( s >= s_2 ) << "\n";
+
+    std::cout << BLUE << "\n [ SWAP OVERLOAD ]\n" << END;
+    swap( s, s_2 );
+    std::cout << "1. "; iterator_loop( s.begin( ), s.end( ) );
+    std::cout << "2. "; iterator_loop( s_2.begin( ), s_2.end( ) );
 }
 
 void ( *set_table[ N_SET_TESTS ] )( void ) = {
@@ -217,11 +233,11 @@ void set_test( void ) {
 
                 system( "clear" );
                 set_table[ id ]( );
-                std::cout << RED << "\n< press ENTER to continue... >\n" << END;
+                std::cout << BLUE << "\n< press ENTER to continue... >\n" << END;
                 std::getline( std::cin, buff );
                 break ;
             }
-            if ( id == N_SET_TESTS ) return ;
+            if ( !*end_buff_ptr && id == N_SET_TESTS ) return ;
         }
                   
     }

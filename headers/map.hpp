@@ -230,9 +230,13 @@ class map {
 	
 		void erase( iterator first, iterator last ) {
 
-			for ( ; first != last; first++ ) {
-
+			iterator	aux;
+			while ( first != last ) {
+				
+				aux = first;
+				++aux;
 				erase( first );
+				first = aux;
 			}
 		}
 

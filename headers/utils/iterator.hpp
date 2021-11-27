@@ -70,8 +70,6 @@ class reverse_iterator {
 		template< class It >		
 		reverse_iterator& operator=( const reverse_iterator< It >& other ) {
 
-			if ( this == &other ) return *this;
-
 			_current_it = other.base( );
 			return *this;
 		}
