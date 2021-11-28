@@ -156,8 +156,7 @@ class _vector_iterator {
 			return _sub;
 		}
 
-		template< class T1, class T2 >
-		friend difference_type operator-( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
+		friend difference_type operator-( const _vector_iterator& lhs, const _vector_iterator& rhs ) {
 
 			return( lhs.base( ) ) - ( rhs.base( ) );
 		}
