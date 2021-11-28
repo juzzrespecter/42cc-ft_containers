@@ -12,7 +12,9 @@
 
 #ifndef __VECTOR_HPP__
 #define __VECTOR_HPP__
+
 #include <limits>
+#include <cstring> //memmove
 #include <stdexcept>
 #include <string>
 #include "./utils/type_traits.hpp"
@@ -157,43 +159,7 @@ class _vector_iterator {
 		template< class T1, class T2 >
 		friend difference_type operator-( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
 
-			return( lhs._vector_ptr + lhs._offs ) - ( rhs._vector_ptr + rhs._offs );
-		}
-
-		template< class T1, class T2 >
-		friend bool operator==( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) { 
-
-			return ( lhs._vector_ptr + lhs._offs ) == ( rhs._vector_ptr + rhs._offs ); 
-		}
-
-		template< class T1, class T2 >
-		friend bool operator<( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
-
-			return ( lhs._vector_ptr + lhs._offs ) < ( rhs._vector_ptr + rhs._offs );
-		}
-
-		template< class T1, class T2 >
-		friend bool operator!=( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) { 
-
-			return !( lhs == rhs ); 
-		}
-
-		template< class T1, class T2 >
-		friend bool operator>( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
-
-			return ( rhs._vector_ptr + rhs._offs ) < ( lhs._vector_ptr + lhs._offs );
-		}
-
-		template< class T1, class T2 >
-		friend bool operator>=( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) { 
-
-			return !( lhs < rhs ); 
-		}
-
-		template< class T1, class T2 >
-		friend bool operator<=( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) { 
-
-			return !( lhs > rhs ); 
+			return( lhs.base( ) ) - ( rhs.base( ) );
 		}
 
 	private:
@@ -201,6 +167,42 @@ class _vector_iterator {
 		difference_type _offs;
 
 };
+
+template< class T1, class T2 >
+bool operator==( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
+
+	return ( lhs.base( ) ) == ( rhs.base( ) ); 
+}
+
+template< class T1, class T2 >
+bool operator<( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
+
+	return ( lhs.base( ) ) < ( rhs.base( ) );
+}
+
+template< class T1, class T2 >
+bool operator!=( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
+
+	return !( lhs == rhs ); 
+}
+
+template< class T1, class T2 >
+bool operator>( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
+
+	return ( rhs.base( ) ) < ( lhs.base( ) );
+}
+
+template< class T1, class T2 >
+bool operator>=( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
+
+	return !( lhs < rhs ); 
+}
+
+template< class T1, class T2 >
+bool operator<=( const _vector_iterator< T1 >& lhs, const _vector_iterator< T2 >& rhs ) {
+
+	return !( lhs > rhs ); 
+}
 
 template< class T, class Alloc = std::allocator< T > >
 class vector {
