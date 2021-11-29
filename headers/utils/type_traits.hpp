@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   type_traits.hpp                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: danrodri <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/11/29 23:47:36 by danrodri          #+#    #+#             */
+/*   Updated: 2021/11/29 23:47:36 by danrodri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef __TYPE_TRAITS_HPP__
 #define __TYPE_TRAITS_HPP__
 
@@ -70,6 +82,15 @@ struct is_const : public false_type { };
 
 template< class T >
 struct is_const< const T > : public true_type { };
+
+template< class T >
+struct is_pointer : public false_type { };
+
+template< class T >
+struct is_pointer< T* > : public  true_type { };
+
+template< class T >
+struct is_pointer< T* const > : public true_type { };
 
 }
 

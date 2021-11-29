@@ -85,7 +85,7 @@ class set {
             return *this;
         }
 
-        allocator_type getAllocator( void ) const {
+        allocator_type get_allocator( void ) const {
 
             return allocator_type( );
         }

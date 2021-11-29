@@ -13,6 +13,7 @@
 #ifndef __VECTOR_HPP__
 #define __VECTOR_HPP__
 
+#include <algorithm>
 #include <limits>
 #include <cstring> //memmove
 #include <stdexcept>
@@ -20,22 +21,6 @@
 #include "./utils/type_traits.hpp"
 #include "./utils/iterator.hpp"
 #include "./utils/algorithm.hpp"
-
-/*	notes:
- *		size( ) vs. capacity( ) - size contains the number of stored elements, while capacity
- *			contains the number of elements that can be stored inside, meaning the current allocated
- *			memory on the array inside.
- *			When trying to *push_back( )* an element inside a vector overflowing its size,  vector
- *			will duplicate its capacity, then allocate that much memory into a new array and then 
- *			copy the old elements of the array into the new one. Finally, vector will destroy and deallocate
- *			all its elements, and the array will be replaced by the next one.
- *			[ push_back( ) checks size with *_vector_cap* attribute ]
- *
- * 			capacity is always initialized with *size* value.
- *
- * 		pop_back( ) - does NOT deallocate memory, but it makes call to object destructor.
- * 		clear( ) - same as pop_back, destroys and edits size, but does not deallocate memory.
- */
 
 namespace ft {
 
@@ -244,7 +229,8 @@ class vector {
 		/* range constructor: allocates & assigns as many elements as the range provided by iterators */
 		template< class InputIterator >
 			vector( InputIterator first, 
-					typename ft::enable_if< !ft::is_integral< InputIterator >::value, InputIterator >::type last,
+					typename ft::enable_if< 
+						ft::is_pointer< typename InputIterator::pointer >::value, InputIterator >::type last,
 					const allocator_type& alloc = allocator_type( ) ) {
 
 			_vector_alloc = alloc;
@@ -275,17 +261,13 @@ class vector {
 
 			if ( this == &other )
 				return *this;
-			if ( _vector_arr != NULL ) {
-
-				this->_destroy_and_dealloc_array( );
-			}
+			if ( _vector_arr != NULL ) 
+				_destroy_and_dealloc_array( );
 			_vector_size = other.size( );
 			_vector_cap = _vector_size;
 			_vector_arr = _vector_alloc.allocate( _vector_size );
-			for ( size_type i = 0; i < _vector_size; i++ ) {
-
+			for ( size_type i = 0; i < _vector_size; i++ )
 				_vector_alloc.construct( _vector_arr + i, other[i] );
-			}
 			return *this;
 		}
 
@@ -342,11 +324,10 @@ class vector {
 		/* max_size: returns max. n of elements that vector can hold ( = elements that alloc can allocate ) */
 		size_type max_size( void ) const {
 
-			return std::numeric_limits<difference_type>::max( );
+			return std::min< size_type >( std::numeric_limits<difference_type>::max( ), _vector_alloc.max_size( ) );
 		}
 
-		/* resize: removes and destroys if n < _vector_size, constructs with copies of val if n > _vector_size
-		 * 		   if n > _vector_cap, calls to reserve( ) */
+		/* resize: removes and destroys if n < _vector_size, constructs with copies of val if n > _vector_size */
 		void resize( size_type n, value_type val = value_type( ) ) {
 
 			if ( n > _vector_cap ) {
@@ -389,7 +370,7 @@ class vector {
 			_vector_cap = n;
 		}
 
-		/* []: returns ref. to element in index n of array, does not control out-of-bounds indexes */
+		/* operator[]: returns ref. to element in index n of array, does not control out-of-bounds indexes */
 		reference operator[]( size_type n ) {
 
 			return _vector_arr[n];
@@ -439,11 +420,8 @@ class vector {
 
 		/* assign: by range, replace with range provided by iterators */
 		template< class InputIterator >
-			void assign( InputIterator first, 
-						 typename ft::enable_if< 
-						 				!ft::is_integral< InputIterator >::value, 
-										 InputIterator 
-							>::type last ) {
+			void assign( InputIterator first,
+						 typename enable_if< is_pointer< typename InputIterator::pointer >::value, InputIterator >::type last ) {
 
 				size_type _new_vector_size = last - first;
 
@@ -505,92 +483,80 @@ class vector {
 		/* insert: add element next to position indicated by iterator */
 		iterator insert( iterator position, const value_type& val ) {
 
-			size_type _offset = position - begin( );
-			if ( _vector_size == _vector_cap ) this->reserve( _vector_cap * 2 );
+			difference_type	_offs = position - begin( );
+			difference_type	_len = end( ) - position;
 
-			pointer _begin = _vector_arr + _offset;
+			if ( _vector_size >= _vector_cap ) reserve( _vector_cap * 2 );
+			pointer _p = _vector_arr + _offs;
 
-			memmove( _begin + 1, _begin, sizeof( value_type ) * ( _vector_size - _offset ) );
-			_vector_alloc.construct( _begin, val );
+			if ( _len ) memmove( _p + 1, _p, _len * sizeof( value_type ) );
+			_vector_alloc.construct( _p, val );
 			_vector_size++;
-			return position;
+			return iterator( _p );
 		}
 
 		/* insert: fill *n* positions starting from iterator */
 		void insert( iterator position, size_type n, const value_type& val ) {
 
-			size_type _offset = position - begin( );
-			if ( _vector_size + n > _vector_cap ) {
+			difference_type _offs = position - begin( );
+			difference_type	_len = end( ) - position;
+			if ( _vector_size + n > _vector_cap ) _realloc_mem_to_array( n );
+			pointer _p = _vector_arr + _offs;
 
-				this->_realloc_mem_to_array( n );
-			}
-
-			pointer _begin = _vector_arr + _offset;
-
-			memmove( _begin + n, _begin, sizeof( value_type ) * ( _vector_size - _offset ) );
-			for ( size_type i = 0; i < n; i++ )	{
-
-				_vector_alloc.construct( _begin + i, val );
-			}
+			/* memmove( dst, src, len ); */
+			if ( _len )	memmove( _p + n, _p, _len * sizeof( value_type ) );
+			for ( size_type i = 0; i < n; i++ )	_vector_alloc.construct( _p + i, val );
 			_vector_size += n;
 		}
 
 		/* insert: by range of iterators */
 		template< class InputIterator >
 			void insert( iterator position, InputIterator first, 
-					     typename ft::enable_if< !ft::is_integral< InputIterator >::value, InputIterator >::type last ) {
+			     		 typename enable_if< is_pointer< typename InputIterator::pointer >::value, InputIterator >::type last ) {
 			
-				size_type _n_to_insert = last - first;
-				size_type _offset = position - begin( );
-				if ( _vector_size + _n_to_insert > _vector_cap ) {
+				difference_type _it_len = last - first;
+				difference_type _offs = position - begin( );
+				size_t			_len = static_cast< size_t >( end( ) - position );
+				if ( _vector_size + _it_len > _vector_cap ) this->_realloc_mem_to_array( _it_len );
+				pointer _p = _vector_arr + _offs;
 
-					this->_realloc_mem_to_array( _n_to_insert );
-				}
-
-				pointer _begin = _vector_arr + _offset;
-
-				memmove( _begin + _n_to_insert, _begin, sizeof( value_type ) * ( _vector_size - _offset ) );
-				for( ; first != last; first++ ) {
-
-					_vector_alloc.construct( _begin, *first );
-					_begin++;
-				}
-				_vector_size += _n_to_insert;
+				if ( _len ) memmove( _p + _it_len, _p, _len * sizeof( value_type ) );
+				for( ; first != last; first++ ) _vector_alloc.construct( _p++, *first );
+				_vector_size += _it_len;
 		}
 
 		/* erase: erase a single element indicated in iterator */
 		iterator erase( iterator position ) {
 
-			size_type _offset = position - begin( );
-			pointer _begin = _vector_arr + _offset;
+			difference_type	_offs = position - begin( );
+			pointer			_p = _vector_arr + _offs;
+			size_t			_len = static_cast< size_t >( end( ) - position - 2 );
 
-			_vector_alloc.destroy( _begin );
-			if ( _offset + 1 < _vector_size ) {
-
-				memmove( _begin, _begin + 1, sizeof( value_type ) * ( _vector_size - _offset ) );
-			}
+			_vector_alloc.destroy( _p );
+			if ( _len ) memmove( _p, _p + 1, ( _len ) * sizeof( value_type ) );
+			_vector_alloc.destroy( _p + _len );
 			_vector_size--;
-			return position;
+			return iterator( _p );
 		}
 
 		/* erase by range of iterators of the same vector */
 		iterator erase( iterator first, iterator last ) {
 
-			size_type _size_range = last - first;
-			size_type _offset_first = first - begin( );
-			size_type _offset_last = last - begin( );
+			difference_type	_len_it = last - first;
+			difference_type	_offs = first - begin( );
+			pointer			_p = _vector_arr + _offs;
 
-			pointer _begin = _vector_arr + _offset_first;
+			if ( _len_it ) {
 
-			for ( ; first != last; first++ ) {
+				pointer			_p_aux = _vector_arr + _offs;
 
-				_vector_alloc.destroy( _begin );
-				_begin++;
+				for ( ; first != last; first++ ) _vector_alloc.destroy( _p_aux++ );
+				size_t			_len = static_cast< size_t >( end( ) - last );
+
+				if ( _len )	memmove( _p, _p + _len_it, _len * sizeof( value_type ) ); 
+				_vector_size -= _len_it;
 			}
-			if ( _offset_last + 1 < _vector_size )
-				memmove( _vector_arr + _offset_first, _vector_arr + _offset_last, sizeof( value_type ) * _size_range ); 
-			_vector_size -= _size_range;
-			return ( _vector_arr + _offset_first );
+			return ( _p );
 		}
 
 		/* swap: swaps arr & info between vectors. Previous ptrs, its & refs still usable */
@@ -631,11 +597,12 @@ class vector {
 
 		void	_destroy_and_dealloc_array( void ) {
 
-			for ( size_type i = 0; i < _vector_size; i++ ) {
+			size_type	vec_len = ( _vector_size < _vector_cap ) ? _vector_size : _vector_cap;
+			for ( size_type i = 0; i < vec_len ; i++ ) {
 
 				_vector_alloc.destroy( &_vector_arr[i] );
 			}
-			_vector_alloc.deallocate( _vector_arr, _vector_size );
+			_vector_alloc.deallocate( _vector_arr, _vector_cap );
 		}
 
 		void	_realloc_mem_to_array( size_type _size_to_inc ) {

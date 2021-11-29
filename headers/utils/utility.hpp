@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utility.hpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: danrodri <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/11/29 23:47:32 by danrodri          #+#    #+#             */
+/*   Updated: 2021/11/29 23:47:32 by danrodri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef __UTILITY_HPP__
 #define __UTILITY_HPP__
 
@@ -19,7 +31,7 @@ struct pair {
 
         ~pair( ) { }
 
-        pair& operator= ( const pair< T1, T2 >& other ) {
+        pair& operator= ( const pair& other ) {
 
             if ( this == &other ) return *this;
             first = other.first;

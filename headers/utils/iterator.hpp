@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   iterator.hpp                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: danrodri <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/11/29 23:47:27 by danrodri          #+#    #+#             */
+/*   Updated: 2021/11/29 23:47:27 by danrodri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef __ITERATOR_HPP__
 #define __ITERATOR_HPP__
 
@@ -159,23 +171,22 @@ class reverse_iterator {
 
 		friend bool operator<( const reverse_iterator& lhs, const reverse_iterator& rhs ) {
 
-			return ( lhs.base( ) < rhs.base( ) );
+			return ( lhs.base( ) > rhs.base( ) );
 		}
 
 		friend bool operator>( const reverse_iterator& lhs, const reverse_iterator& rhs ) {
 
-			return ( lhs.base( ) > rhs.base( ) );
+			return ( lhs.base( ) < rhs.base( ) );
 		}
-
 
 		friend bool operator<=( const reverse_iterator& lhs, const reverse_iterator& rhs ) {
 
-			return ( lhs.base( ) <= rhs.base( ) );
+			return ( lhs.base( ) >= rhs.base( ) );
 		}
 
 		friend bool operator>=( const reverse_iterator& lhs, const reverse_iterator& rhs ) {
 
-			return ( lhs.base( ) >= rhs.base( ) );
+			return ( lhs.base( ) <= rhs.base( ) );
 		}
 
 		friend reverse_iterator operator+( difference_type n, const reverse_iterator& it ) {
@@ -188,7 +199,7 @@ class reverse_iterator {
 
 		friend difference_type operator-( const reverse_iterator& lhs, const reverse_iterator& rhs ) {
 
-			return lhs.base( ) - rhs.base( );
+			return rhs.base( ) - lhs.base( );
 		}
 
 	protected:
