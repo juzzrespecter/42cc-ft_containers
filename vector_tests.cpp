@@ -185,44 +185,38 @@ bool	erase_modifier_part_one(){
 //	ftv.erase(ftv.begin() + 1e5);
 	return test_result;
 }
+
+bool	erase_modifier_part_two(){
+
+}
+
 static std::string test_name_table[N_TESTS] = {
-	"ITERATOR TEST",
-	"REVERSE_ITERATOR TEST",
-	"CONSTRUCTOR TEST",
-	"OPERATOR= TEST",
-	"ASSIGN TEST",
-	"AT TEST",
-	"OPERATOR[] TEST",
-	"FRONT TEST",
-	"BACK TEST",
-	"ITERATOR CALL TESTS",
-	"EMPTY TEST",
-	"SIZE TEST",
-	"MAX_SIZE TEST",
-	"RESERVE TEST",
-	"CAPACITY TEST",
-	""
+	"ITERATOR TEST",	"REVERSE_ITERATOR TEST",
+	"CONSTRUCTOR TEST",	"OPERATOR= TEST",
+	"ASSIGN TEST",		"AT TEST",
+	"OPERATOR[] TEST",	"FRONT TEST",
+	"BACK TEST",		"EMPTY TEST",
+	"SIZE TEST",		"MAX_SIZE TEST",
+	"RESERVE TEST",		"CAPACITY TEST",
+	"CLEAR TEST",		"INSERT TEST",	
+	"ERASE TEST",		"PUSH_BACK TEST",
+	"POP_BACK TEST",	"RESIZE TEST",
+	"SWAP TEST",		"COMP. OPERATORS TESTS"
 };
 
 static bool (*func_table[N_TESTS])(void) = {
-	iterator_test,
-	reverse_iterator_test,
-	constructor_test,
-	operatorequal_test,
-	assign_test,
-	at_test,
-	operatoraccess_test,
-	front_test,
-	back_test,
-	iterator_call_test,
-	empty_test,
-	size_test,
-	max_size_test,
-	reserve_test,
-	capacity_test
-
-	
-} 
+	iterator_test, 		reverse_iterator_test,
+	constructor_test,	operatorequal_test,
+	assign_test,		at_test,
+	operatoraccess_test,	front_test,
+	back_test,		empty_test,
+	size_test,		max_size_test,
+	reserve_test,		capacity_test,
+	clear_test,		insert_test,
+	erase_test,		push_back_test,
+	pop_back_test,		resize_test,
+	swap_test,		comp_operators_test
+};
 
 /* stress test */
 

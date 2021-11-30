@@ -11,3 +11,4 @@
 * usar f::cont con algortimos de std
 * ambiguous constructor en vector al usar double
 * check stress test con insert y swap
+* double free al destruir un vector despues de insert en la llamada a destroy del alloc ( check line 1812 in vector_tests )
