@@ -229,17 +229,16 @@ class vector {
 		/* range constructor: allocates & assigns as many elements as the range provided by iterators */
 		template< class InputIterator >
 			vector( InputIterator first, 
-					typename ft::enable_if< 
-						ft::is_pointer< typename InputIterator::pointer >::value, InputIterator >::type last,
+					typename enable_if< is_pointer< typename InputIterator::pointer >::value , InputIterator >::type last,
 					const allocator_type& alloc = allocator_type( ) ) {
 
 			_vector_alloc = alloc;
 			_vector_size = last - first;
 			_vector_cap = last - first;
 			_vector_arr = _vector_alloc.allocate( _vector_size );
-			for( size_type i = 0; first != last; first++, i++ ) {
+			for( size_type i = 0; first != last; first++ ) {
 
-				_vector_alloc.construct( _vector_arr + i, *first );
+				_vector_alloc.construct( _vector_arr + i++, *first );
 			}
 		}
 
@@ -517,7 +516,7 @@ class vector {
 				difference_type _it_len = last - first;
 				difference_type _offs = position - begin( );
 				size_t			_len = static_cast< size_t >( end( ) - position );
-				if ( _vector_size + _it_len > _vector_cap ) this->_realloc_mem_to_array( _it_len );
+				if ( _vector_size + _it_len > _vector_cap ) _realloc_mem_to_array( _it_len );
 				pointer _p = _vector_arr + _offs;
 
 				if ( _len ) memmove( _p + _it_len, _p, _len * sizeof( value_type ) );

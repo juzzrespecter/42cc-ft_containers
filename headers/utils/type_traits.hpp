@@ -12,14 +12,15 @@
 
 #ifndef __TYPE_TRAITS_HPP__
 #define __TYPE_TRAITS_HPP__
+#include "iterator.hpp"
 
 namespace  ft {
 
 template< bool B, class T = void >
-	struct enable_if { };
+struct enable_if { };
 
 template< class T >
-	struct enable_if< true, T > { typedef T type; };
+struct enable_if< true, T > { typedef T type; };
 
 
 template< class T, T v >
