@@ -21,8 +21,6 @@
 #include "./utils/tree.hpp"
 #include "./utils/iterator.hpp"
 
-/* maybe map and set can inherit from tree ?? */
-
 namespace ft {
 
 template< class Key,
@@ -84,10 +82,9 @@ class map {
 		}
 
 		template< class InputIterator >
-		map( InputIterator first,
-			 InputIterator last,
-    	     const key_compare& comp = key_compare( ),
-      		 const allocator_type& alloc = allocator_type( ) ) :
+		map( InputIterator first, InputIterator last,
+		     const key_compare& comp = key_compare( ),
+      		     const allocator_type& alloc = allocator_type( ) ) :
 
 			   _map_tree( value_compare( comp ) ),
 			   _map_alloc( alloc ) {

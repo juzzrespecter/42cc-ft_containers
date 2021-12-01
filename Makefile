@@ -20,21 +20,21 @@ HEADER += $(addprefix $(DIR_UTILS),$(UT_HEADER))
 DIR_TEST = tester/
 DIR_OBJ = obj/
 SRC_TEST = tester.cpp \
-		   tester_vector_functions.cpp \
-		   tester_stack_functions.cpp \
-		   tester_map_functions.cpp \
-		   tester_set_functions.cpp 
-#		   subject_main.cpp
+		   vector_tests.cpp \
+		   stack_tests.cpp \
+		   map_tests.cpp \
+		   set_tests.cpp 
 OBJ_TEST = $(patsubst %.cpp, $(DIR_OBJ)%.o, $(SRC_TEST))
 HEADER_TEST = $(DIR_TEST)tester.hpp
 
 NAME = stlft.a
-TEST = containers_test
+TEST = ft_containers_test
 
 RM   = rm -rf
 AR	 = ar rcs
 CXX  = clang++
-CXXFLAGS = -Wall -Werror -Wextra -std=c++98 -fsanitize=address -g3
+CXXFLAGS = -Wall -Werror -Wextra -std=c++98
+DEBUG	 = -fsanitize=address -g3
 
 all:	$(NAME)
 
@@ -44,10 +44,10 @@ $(NAME):	$(OBJ) $(HEADER)
 test:	$(TEST)
 
 $(TEST):	$(NAME) $(OBJ_TEST) $(HEADER_TEST)
-	$(CXX) $(CXXFLAGS) -o $(TEST) $(OBJ_TEST) $(NAME)
+	$(CXX) $(CXXFLAGS) $(DEBUG) -o $(TEST) $(OBJ_TEST) $(NAME)
 
 $(DIR_OBJ)%.o: $(DIR_TEST)%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -I $(HEADER_TEST)
+	$(CXX) $(CXXFLAGS) -c $< -I $(DIR_HEADER)
 	mkdir -p $(DIR_OBJ)
 	mv $(@F) $(DIR_OBJ)
 

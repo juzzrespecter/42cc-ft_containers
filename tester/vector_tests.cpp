@@ -1,14 +1,7 @@
 #include "vector.hpp"
 #include <vector>
-#include <string>
-#include <iostream>
+#include "tester.hpp"
 #include <iomanip>
-# include <sys/time.h>
-
-
-#define N_TESTS 22
-#define OK "\033[32m [OK] \033[0m"
-#define KO "\033[31m [KO] \033[0m"
 
 typedef ft::vector<int>				ft_vector;
 typedef ft_vector::iterator			ft_iterator;
@@ -601,7 +594,7 @@ bool	comp_operators_test(void){
 	return test_result;
 }
 
-static std::string test_name_table[N_TESTS] = {
+static std::string test_name_table[N_VECTOR_TEST] = {
 	"ITERATOR TEST",	"REVERSE_ITERATOR TEST",
 	"CONSTRUCTOR TEST",	"OPERATOR= TEST",
 	"ASSIGN TEST",		"AT TEST",
@@ -615,7 +608,7 @@ static std::string test_name_table[N_TESTS] = {
 	"SWAP TEST",		"COMP. OPERATORS TESTS"
 };
 
-static bool (*func_table[N_TESTS])(void) = {
+static bool (*func_table[N_VECTOR_TEST])(void) = {
 	iterator_test, 			reverse_iterator_test,
 	constructor_test,		operatorequal_test,
 	assign_test,			at_test,
@@ -658,11 +651,10 @@ bool stress_test(void){
 	return (time_ft < time_std * 10) ? true : false;
 }
 
-int main( void ) {
+void vector_tests(void) {
 	system("clear");
 	std::cout << "\n[ vector test: compare behaviour with std::vector ]\n\n";
-	for (int i = 0; i < N_TESTS; i++)
+	for (int i = 0; i < N_VECTOR_TEST; i++)
 		std::cout << std::setw(30) << test_name_table[i] << ": " << ((func_table[i])() ? OK : KO) << "\n";
 	std::cout << "\n< performance test... : " << ((stress_test()) ? OK : KO) << " >\n";
-   	return EXIT_SUCCESS;
 }

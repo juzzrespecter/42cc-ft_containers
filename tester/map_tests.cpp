@@ -1,8 +1,6 @@
 #include "map.hpp"
 #include <map>
-#include <utility>
-#include <string>
-#define N_TESTS 20
+#include "tester.hpp"
 
 typedef ft::map<int, int>			ft_map;
 typedef ft_map::iterator			ft_iterator;
@@ -29,11 +27,84 @@ void	fill_maps(ft_map& fm, std_map& sm) {
 }
 
 bool	iterator_test(void) {
+	bool	test_result;
+	/* -- iterator -- */
+	{
+		ft_map	mf;
+		std_map	sm;
+		fill_maps(fm,sm);
+
+		ft_iterator	f_it = mf.begin();
+		ft_iterator	f_it_e = mf.end();
+		std_iterator	s_it = ms.begin();
+		std_iterator	s_it_e = ms.end();
+	}
+	/* -- const_iterator -- */
+	{
+	}
+}
+
+bool	reverse_iterator_test(void) {
 
 }
-bool	reverse_iterator_test(void) {}
-bool	constructor_test(void) {}
-bool	operatorequal_test(void) {}
+
+bool	constructor_test(void) {
+	bool	test_result;
+	/* -- default -- */
+	{
+		ft_map	fm;
+		std_map	sm;
+		test_result = ft::equal(fm.begin(),fm.end(),sm.begin());
+	}
+	/* -- range -- */
+	{
+		ft_map	fmrange;
+		std_map	smrange;
+		
+		fill_maps(fmrange,smrange);
+
+		ft_map	fm(fmrange.begin(), fmrange.end());
+		std_map	sm(smrange.begin(), smrange.end());
+		test_result = (test_result) && ft::equal(fm.begin(),fm.end(),sm.begin());
+	}
+	/* -- copy -- */
+	{
+		ft_map	fmcpy;
+		std_map	smcpy;
+
+		fill_maps(fmcpy,smcpy);
+
+		ft_map	fm(fmcpy);
+		std_map	sm(smcpy);
+		test_result = (test_result) && ft::equal(fm.begin(),fm.end(),sm.begin());
+	}
+	return test_result;
+}
+
+bool	operatorequal_test(void) {
+	bool	test_result;
+
+	ft_map	fmeq;
+	std_map	smeq;
+
+	ft_map	fm = fmeq;
+	test_result = ft::equal(fm.begin(),fm.end(),fmeq.begin());
+
+	fill_maps(fmeq,smeq);
+	fm = fmeq;
+	test_result = (test_result) &&
+		      (ft::equal(fm.begin(),fm.end(),fmeq.begin()) &&
+		      (ft::equal(fm.begin(),fm.end(),smeq.begin());
+
+	fmeq.clear();
+	smeq.clear();
+	fm = fmeq;
+	test_result = (test_result) &&
+		      (ft::equal(fm.begin(),fm.end(),fmeq.begin()) &&
+		      (ft::equal(fm.begin(),fm.end(),smeq.begin());
+	return test_result;
+}
+
 bool	at_test(void) {
 	std_map	sm;
 	ft_map	fm;
@@ -179,10 +250,35 @@ bool	insert_test(void) {
 	}
 }
 
-bool	erase_test(void) {}
-bool	swap_test(void) {}
-bool	count_test(void) {}
-bool	find_test(void) {}
+bool	erase_test(void) {
+	ft_map	fm;
+	std_map	sm;
+
+	/* -- iterator overload -- */
+	{
+		ft_map	fm;
+		std_map	sm;
+	}
+}
+
+bool	swap_test(void) {
+}
+
+bool	count_test(void) {
+	ft_map	fm;
+	std_map	sm;
+
+	fill_maps(fm,sm);
+	for(int i = 0; i < MAP_SIZE < i++){
+		if(fm.count(i) != sm.count(i)) return false;
+	}
+	return true;
+}
+
+bool	find_test(void) {
+	ft_map	fm;
+	std_map	sm;
+}
 bool	upper_bound_test(void) {}
 bool	lower_bound_test(void) {}
 bool	equal_bound_test(void) {}
@@ -190,7 +286,7 @@ bool	observers_bound_test(void) {}
 bool	comp_operators_test(void) {}
 
 
-static std::string test_name_table[N_TESTS] = {
+static std::string test_name_table[N_MAP_TEST] = {
 	"ITERATOR TEST",	"REVERSE_ITERATOR TEST",
 	"CONSTRUCTOR TEST",	"OPERATOR= TEST",
 	"AT TEST",			"OPERATOR[] TEST",	
@@ -203,7 +299,7 @@ static std::string test_name_table[N_TESTS] = {
 	"OBSERVERS TEST",	"COMP. OPERATORS TESTS"
 };
 
-static bool (*func_table[N_TESTS])(void) = {
+static bool (*func_table[N_MAP_TEST])(void) = {
 	iterator_test, 			reverse_iterator_test,
 	constructor_test,		operatorequal_test,
 	at_test,				operatoraccess_test,	
@@ -216,12 +312,10 @@ static bool (*func_table[N_TESTS])(void) = {
 	observers_test,			comp_operators_test
 };
 
-int main( void ) {
-	system("clear");
+void map_tests( void ) {
 	std::cout << "\n[ map test: compare behaviour with std::map ]\n\n";
-	for (int i = 0; i < N_TESTS; i++)
+	for (int i = 0; i < N_MAP_TEST; i++)
 		std::cout << std::setw(30) << test_name_table[i] << ": " << ((func_table[i])() ? OK : KO) << "\n";
 	std::cout << "\n< performance test... : " << ((stress_test()) ? OK : KO) << " >\n";
-   return EXIT_SUCCESS;
 }
 
