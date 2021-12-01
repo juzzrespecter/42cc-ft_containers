@@ -1,14 +1,4 @@
-* max_size en map y set no dan mismo output que en std
-* check en llamada a erase( iteradores ) a que erase con un solo parametro llama
-* insert w/ hint 'por lo menos' derreferencia el iterador pasado como argumento
-* std::swap overload para cada contenedor, y de paso sintaxis de las especialiaciones para templates
-
-
-* testear insert with hint
 * TEST = compares con std
-* floating point exception en el test insert de vector
 
 * usar f::cont con algortimos de std
-* ambiguous constructor en vector al usar double
 * check stress test con insert y swap
-* double free al destruir un vector despues de insert en la llamada a destroy del alloc ( check line 1812 in vector_tests )

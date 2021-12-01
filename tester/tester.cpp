@@ -1,5 +1,15 @@
 #include "tester.hpp"
 
+long get_time( void ) {
+
+	struct timeval	time_s;
+	long			time;
+
+	gettimeofday( &time_s, NULL );
+	time = time_s.tv_sec * 1000 + ( long )time_s.tv_usec / 1000;
+	return ( time );
+}
+
 static void ( *test_table[ N_TEST ] )( void ) = {
 
 	vector_tests,

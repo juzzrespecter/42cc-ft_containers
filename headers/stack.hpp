@@ -10,16 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-/*
- * notes on stack:
- * 		Wrapper on underlying container; protected access to it.
- *
- *		This container must satisfy requeriments: must be a sequence container 
- *		( stores objects of the same type in a linear arrangement ), and must
- *		provide member functions { back( ), push_back( ), pop_back( ) }
- *
- */
-
 #ifndef __STACK_HPP__
 #define __STACK_HPP__
 #include "vector.hpp"
@@ -28,7 +18,7 @@ namespace ft {
 
 template< class T, class Container = ft::vector< T > >
 class stack {
-
+		
 	public:
 		typedef T			value_type;
 		typedef Container	container_type;

@@ -13,7 +13,7 @@ typedef std_vector::iterator			std_iterator;
 typedef std_vector::const_iterator		std_const_iterator;
 typedef std_vector::reverse_iterator	std_reverse_iterator;
 
-bool	iterator_test(void) {
+static bool	iterator_test(void) {
 	ft_vector	ftv;
 	std_vector	stdv;
 	bool	test_result;
@@ -48,7 +48,8 @@ bool	iterator_test(void) {
 		ft_const_iterator it_c_e_r = ftv.end();
 		std_const_iterator it_c = stdv.begin();
 		std_const_iterator it_c_e = stdv.end();
-		test_result = ((it_c_r == it_c_e_r) == (it_c == it_c_e) &&
+		test_result = (test_result) && 
+					   ((it_c_r == it_c_e_r) == (it_c == it_c_e) &&
 			    	   (it_c_r != it_c_e_r) == (it_c != it_c_e) &&
 					   (it_c_r > it_c_e_r) == (it_c > it_c_e) &&
 					   (it_c_r >= it_c_e_r) == (it_c >= it_c_e) &&
@@ -58,7 +59,7 @@ bool	iterator_test(void) {
 	return test_result;
 }
 
-bool	reverse_iterator_test(void) {
+static bool	reverse_iterator_test(void) {
 	bool	test_result;
 	{
 		ft_vector	ftv(1e6);
@@ -93,7 +94,7 @@ bool	reverse_iterator_test(void) {
 	return test_result;
 }
 
-bool	constructor_test(void){
+static bool	constructor_test(void){
 	bool	test_result;
 	/*	-- template deduction -- */
 	{
@@ -141,7 +142,7 @@ bool	constructor_test(void){
 	return test_result;
 }
 
-bool	operatorequal_test(void){
+static bool	operatorequal_test(void){
 	ft_vector	ftcpy(1e7,234);
 	std_vector	stdcpy(1e7,234);
 
@@ -150,7 +151,7 @@ bool	operatorequal_test(void){
 	return ftv.size() == stdv.size() && ft::equal(ftv.begin(),ftv.end(),stdv.begin());
 }
 
-bool	assign_test(void){
+static bool	assign_test(void){
 	bool	test_result;
 	/*	-- range overload --	*/
 	ft_vector	ftrange(1e6,345);
@@ -196,7 +197,7 @@ bool	assign_test(void){
 	return test_result;
 }
 
-bool	at_test(void){
+static bool	at_test(void){
 	static size_t 	size = 1e6;
 	ft_vector		ftv(size,876);
 	std_vector		stdv(size,876);
@@ -209,7 +210,7 @@ bool	at_test(void){
 	return false;
 }
 
-bool	operatoraccess_test(void){
+static bool	operatoraccess_test(void){
 	static size_t 	size = 1e6;
 	ft_vector		ftv(size,876);
 	std_vector		stdv(size,876);
@@ -221,21 +222,21 @@ bool	operatoraccess_test(void){
 	return true;
 }
 
-bool	front_test(void){
+static bool	front_test(void){
 	ft_vector	ftv(10);
 	std_vector	stdv(10);
 	for(int i = 0; i < 10; i++) {ftv.push_back(i);stdv.push_back(i);}
 	return ftv.front() == stdv.front();
 }
 
-bool	back_test(void){
+static bool	back_test(void){
 	ft_vector	ftv(10);
 	std_vector	stdv(10);
 	for(int i = 0; i < 10; i++) {ftv.push_back(i);stdv.push_back(i);}
 	return ftv.back() == stdv.back();
 }
 
-bool	empty_test(void){
+static bool	empty_test(void){
 	bool	test_result;
 	{
 		ft_vector	ftv;
@@ -257,7 +258,7 @@ bool	empty_test(void){
 	return test_result;
 }
 
-bool	size_test(void){
+static bool	size_test(void){
 	bool	test_result;
 	{
 		ft_vector	ftv;
@@ -280,16 +281,16 @@ bool	size_test(void){
 	return test_result;
 }
 
-bool	max_size_test(void){
+static bool	max_size_test(void){
 	return (ft::vector<int>().max_size() == std::vector<int>().max_size() &&
 			ft::vector<char>().max_size() == std::vector<char>().max_size() &&
 			ft::vector<double>().max_size() == std::vector<double>().max_size() &&
 			ft::vector<std::string>().max_size() == std::vector<std::string>().max_size());
 }
 
-bool	reserve_test(void){
+static bool	reserve_test(void){
 	bool		test_result;
-	ft_vector	ftv;
+static 	ft_vector	ftv;
 	std_vector	stdv;
 
 	ftv.reserve(1); stdv.reserve(1);
@@ -312,9 +313,9 @@ bool	reserve_test(void){
 	return false;
 }
 
-bool	capacity_test(void){
+static bool	capacity_test(void){
 	bool		test_result;
-	ft_vector	ftv;
+static 	ft_vector	ftv;
 	std_vector	stdv;
 
 	test_result = ftv.capacity() == stdv.capacity();
@@ -339,7 +340,7 @@ bool	capacity_test(void){
 	return test_result;
 }
 
-bool	clear_test(void){
+static bool	clear_test(void){
 	ft_vector	ftv(1e6,123);
 	std_vector	stdv(1e6,123);
 
@@ -348,7 +349,7 @@ bool	clear_test(void){
 	return ft::equal(stdv.begin(),stdv.end(),ftv.begin());
 }
 
-bool	insert_test(void){
+static bool	insert_test(void){
 	    bool	test_result;
 		/*	-- one element overload --	*/
 		{
@@ -418,7 +419,7 @@ bool	insert_test(void){
 	return test_result;
 }
 
-bool	erase_test(void){
+static bool	erase_test(void){
 	bool	test_result;
 	/*	-- single element overload --	*/
 	{
@@ -448,7 +449,7 @@ bool	erase_test(void){
 	return test_result;
 }
 
-bool	push_back_test(void){
+static bool	push_back_test(void){
 	ft_vector	ftv;
 	std_vector	stdv;
 	int			value;
@@ -460,7 +461,7 @@ bool	push_back_test(void){
 	return ft::equal(stdv.begin(),stdv.end(),ftv.begin()) && (ftv.size()==stdv.size());
 }
 
-bool	pop_back_test(void){
+static bool	pop_back_test(void){
 	ft_vector	ftv(1e6,3635);
 	std_vector	stdv(1e6,3635);
 	for(int i = 0; i < 1e6; i++) {
@@ -472,7 +473,7 @@ bool	pop_back_test(void){
 	return ft::equal(stdv.begin(),stdv.end(),ftv.begin()) && (ftv.size()==stdv.size());
 }
 
-bool	resize_test(void){
+static bool	resize_test(void){
 	bool	test_result;
 	{
 		ft_vector	ftv;
@@ -507,7 +508,7 @@ bool	resize_test(void){
 	return test_result;
 }
 
-bool	swap_test(void){
+static bool	swap_test(void){
 	bool	test_result;
 	{
 		ft_vector	ftv_1(1e6,678);
@@ -547,7 +548,7 @@ bool	swap_test(void){
 	return test_result;
 }
 
-bool	comp_operators_test(void){
+static bool	comp_operators_test(void){
 	bool	test_result;
 	ft_vector	ftv;
 	std_vector	stdv;
@@ -590,7 +591,6 @@ bool	comp_operators_test(void){
 				  (ftv >= ftv_2) == (stdv >= stdv_2) &&
 				  (ftv <  ftv_2) == (stdv <  stdv_2) &&
 				  (ftv <= ftv_2) == (stdv <= stdv_2);
-	
 	return test_result;
 }
 
@@ -622,16 +622,7 @@ static bool (*func_table[N_VECTOR_TEST])(void) = {
 	swap_test,				comp_operators_test
 };
 
-long get_time(void){
-	struct timeval	time_s;
-	long			time;
-
-	gettimeofday(&time_s, NULL);
-	time = time_s.tv_sec * 1000 + (long)time_s.tv_usec / 1000;
-	return (time);
-}
-
-bool stress_test(void){
+static bool stress_test(void){
 
 	long	time_std = get_time();
 	std_vector s(1e7,1312);

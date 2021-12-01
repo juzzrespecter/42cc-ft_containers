@@ -5,6 +5,17 @@
 #include <string>
 #include <iostream>
 #include <cstdlib>
+#include <iomanip>
+
+#include "stack.hpp"
+#include "set.hpp"
+#include "vector.hpp"
+#include "map.hpp"
+
+#include <stack>
+#include <set>
+#include <vector>
+#include <map>
 
 #define	CYAN	"\033[33m"
 #define	END	"\033[0m"
@@ -16,11 +27,66 @@
 #define N_TEST 4
 
 #define N_VECTOR_TEST	22
-#define N_STACK_TEST	8 // maybe
+#define N_STACK_TEST	8
 #define N_MAP_TEST	20
-#define N_SET_TEST	18 // maybe
+#define N_SET_TEST	18
 
-template< class Node >
+template< class ftMap, class stdMap >
+void	fill_tree_map( ftMap& fm, stdMap& sm ) {
+
+	for ( int i = 0; i < 1e5; i++ ) {
+
+		int k = rand(), v = rand();
+
+		fm.insert( ft::make_pair(k,v) );
+		sm.insert( std::make_pair(k,v) );
+	}	
+}
+
+template< class ftSet, class stdSet>
+void	fill_tree_set( ftSet& fs, stdSet& ss ) {
+
+	for ( int i = 0; i < 1e5; i++ ) {
+
+		int k = rand();
+
+		fs.insert(k);
+		ss.insert(k);
+	}
+}
+
+template< class Map1, class Map2 >
+bool	equal_test_map(Map1& fm, Map2& sm){
+
+	int	sum_f_f = 0;
+	int	sum_f_s = 0;
+	int sum_s_f = 0;
+	int sum_s_s = 0;
+	if(fm.size() != sm.size()) return false;
+	for(typename Map1::iterator it = fm.begin(); it != fm.end(); it++) {
+		sum_f_f += it->first;
+		sum_f_s += it->second;
+	}
+	for(typename Map2::iterator it = sm.begin(); it != sm.end(); it++) {
+		sum_s_f += it->first;
+		sum_s_s += it->second;
+	}
+	return((sum_f_f == sum_s_f) && (sum_f_s == sum_s_s));
+}
+
+template< class Set1, class Set2 >
+bool	equal_test_set(Set1& fm, Set2& sm){
+
+	int	sum_f = 0;
+	int sum_s = 0;
+	if(fm.size() != sm.size()) return false;
+	for(typename Set1::iterator it = fm.begin(); it != fm.end(); it++) sum_f += *it;
+	for(typename Set2::iterator it = sm.begin(); it != sm.end(); it++) sum_s += *it;
+	return sum_f == sum_s;
+}
+
+
+/*template< class Node >
 void	print_tree( Node n, int lvl ) {
 
 	if ( !n ) {
@@ -30,13 +96,43 @@ void	print_tree( Node n, int lvl ) {
 	}
 	print_node( n );
 	print_tree( n->child[ 0 ] );
-	std::cout << "\n"; indent( lvl );
+	std::cout << "\n";// indent( lvl ); 
 	print_tree( n->child[ 1 ] );
-}
+}*/
+
+template< class T, class Cont = ft::vector< T > >
+class MutantStack : public ft::stack< T, Cont > {
+
+	public:
+	
+	typedef	typename Cont::iterator					iterator;
+	typedef typename Cont::const_iterator			const_iterator;
+	typedef typename Cont::reverse_iterator			reverse_iterator;
+	typedef typename Cont::const_reverse_iterator	const_reverse_iterator;
+
+	MutantStack( void ) : ft::stack< T, Cont >( ) { }
+	MutantStack( const MutantStack& other ) : ft::stack< T, Cont >( other ) { }
+	MutantStack( const Cont& cont) : ft::stack< T, Cont >( cont ) { }
+	~MutantStack( ) { }
+
+	iterator	begin( void ) { return this->c.begin( ); }
+	iterator	end( void ) { return this->c.end( ); }
+
+	const_iterator begin( void ) const { return this->c.begin( ); }
+	const_iterator end( void ) const { return this->c.end( ); }
+
+	reverse_iterator	rbegin( void ) { return this->c.rbegin( ); }
+	reverse_iterator	rend( void ) { return this->c.rend( ); }
+
+	const_reverse_iterator	rbegin( void ) const { return this->c.rbegin( ); }
+	const_reverse_iterator	rend( void ) const { return this->c.rend( ); }
+};
 
 void	vector_tests( void );
 void	map_tests( void );
 void	stack_tests( void );
 void	set_tests( void );
+
+long	get_time( void );
 
 #endif

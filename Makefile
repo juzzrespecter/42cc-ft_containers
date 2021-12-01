@@ -47,7 +47,7 @@ $(TEST):	$(NAME) $(OBJ_TEST) $(HEADER_TEST)
 	$(CXX) $(CXXFLAGS) $(DEBUG) -o $(TEST) $(OBJ_TEST) $(NAME)
 
 $(DIR_OBJ)%.o: $(DIR_TEST)%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -I $(DIR_HEADER)
+	$(CXX) $(CXXFLAGS) $(DEBUG) -c $< -I $(DIR_HEADER)
 	mkdir -p $(DIR_OBJ)
 	mv $(@F) $(DIR_OBJ)
 
