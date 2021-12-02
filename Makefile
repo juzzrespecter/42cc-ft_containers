@@ -23,7 +23,7 @@ SRC_TEST = tester.cpp \
 		   vector_tests.cpp \
 		   stack_tests.cpp \
 		   map_tests.cpp \
-		   set_tests.cpp 
+		   set_tests.cpp
 OBJ_TEST = $(patsubst %.cpp, $(DIR_OBJ)%.o, $(SRC_TEST))
 HEADER_TEST = $(DIR_TEST)tester.hpp
 
@@ -36,28 +36,46 @@ CXX  = clang++
 CXXFLAGS = -Wall -Werror -Wextra -std=c++98
 DEBUG	 = -fsanitize=address -g3
 
+GREEN = "\033[32m"
+RED   = "\033[31m"
+END   = "\033[0m"
+
 all:	$(NAME)
 
 $(NAME):	$(OBJ) $(HEADER)
-	$(AR) $(NAME) $(OBJ)
+	@$(AR) $(NAME) $(OBJ)
+	@echo "$(GREEN) $(NAME) created successfully$(END)"
 
 test:	$(TEST)
 
 $(TEST):	$(NAME) $(OBJ_TEST) $(HEADER_TEST)
-	$(CXX) $(CXXFLAGS) $(DEBUG) -o $(TEST) $(OBJ_TEST) $(NAME)
+	@$(CXX) $(CXXFLAGS) $(DEBUG) -o $(TEST) $(OBJ_TEST) $(NAME)
+	@echo "$(GREEN) $(TEST) created successfully$(END)"
 
 $(DIR_OBJ)%.o: $(DIR_TEST)%.cpp
-	$(CXX) $(CXXFLAGS) $(DEBUG) -c $< -I $(DIR_HEADER)
-	mkdir -p $(DIR_OBJ)
-	mv $(@F) $(DIR_OBJ)
+	@$(CXX) $(CXXFLAGS) $(DEBUG) -c $< -I $(DIR_HEADER)
+	@echo $(GREEN) "( ͡° ͜ʖ ͡°)" $(END)"\t $< compiled successfully"
+	@mkdir -p $(DIR_OBJ)
+	@mv $(@F) $(DIR_OBJ)
 
 $(DIR_OBJ)%.o:	$(SRC) $(HEADER)
-	$(CXX) $(CXXFLAGS) -c $(SRC)
-	mkdir -p $(DIR_OBJ)
-	mv $(@F) $(DIR_OBJ)
+	@$(CXX) $(CXXFLAGS) -c $(SRC)
+	@echo $(GREEN) "( ͡° ͜ʖ ͡°)" $(END)"\t $< compiled successfully"
+	@mkdir -p $(DIR_OBJ)
+	@mv $(@F) $(DIR_OBJ)
+
+$(DIR_TEST)%.cpp:
+	@echo "$(RED) ¯\_(ツ)_/¯ $(END)\t $<: file not found."
+$(SRC):
+	@echo "$(RED) ¯\_(ツ)_/¯ $(END)\t $(SRC): file not found."
 
 clean:
-	$(RM) $(NAME) $(TEST)
+	@echo " removed $(NAME)"
+	@echo " removed $(TEST)"
+	@$(RM) $(NAME) $(TEST)
 
 fclean: clean
-	$(RM) $(DIR_OBJ)
+	@echo " removed $(DIR_OBJ)"
+	@$(RM) $(DIR_OBJ)
+
+re:	fclean all

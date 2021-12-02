@@ -264,8 +264,9 @@ class _tree {
 		typedef T			 value_type;
 		typedef Compare      value_compare;
 		typedef size_t       size_type;
+		typedef Alloc		 allocator_node_type;
 
-		typedef ft::node< value_type, value_compare, Alloc >	node;
+		typedef ft::node< value_type, value_compare, allocator_node_type  >	node;
 
 		typedef _tree_iterator< node, value_type* >			iterator;
 		typedef _tree_iterator< node, const value_type* >	const_iterator;
@@ -338,7 +339,8 @@ class _tree {
 
 		size_type	max_size( void ) const {
 
-			return std::numeric_limits< difference_type >::max( ); // test why does not work
+			//return _tree_node_alloc.max_size( );
+			return std::numeric_limits< difference_type >::max( ) / sizeof( value_type ); // test why does not work
 		}
 
 		void	clear( void ) {
@@ -464,10 +466,11 @@ class _tree {
 		}
 
 	private:
-		node*       	_tree_root;
-		size_type		_tree_size;
-		value_compare	_tree_comp;
-		allocator_type	_tree_alloc;
+		node*       		_tree_root;
+		size_type			_tree_size;
+		value_compare		_tree_comp;
+		allocator_type		_tree_alloc;
+		allocator_node_type _tree_node_alloc;
 
 		typedef	void ( _tree::*rb_cases )( node* n );
 
