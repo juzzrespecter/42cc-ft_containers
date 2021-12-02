@@ -226,15 +226,15 @@ class vector {
 			}
 		}
 
-		/* range constructor: allocates & assigns as many elements as the range provided by iterators */
 		template< class InputIterator >
-			vector( InputIterator first, 
-					typename enable_if< is_pointer< typename InputIterator::pointer >::value , InputIterator >::type last,
-					const allocator_type& alloc = allocator_type( ) ) {
+		vector( InputIterator first, InputIterator last,
+		typename enable_if< !is_integral< InputIterator >::value, InputIterator >::type* switch_type = NULL,
+		const allocator_type& alloc = allocator_type( ) ) {
 
+			( void )switch_type;
 			_vector_alloc = alloc;
-			_vector_size = last - first;
-			_vector_cap = last - first;
+			_vector_size = std::distance( first, last );
+			_vector_cap = std::distance( first, last );
 			_vector_arr = _vector_alloc.allocate( _vector_size );
 			for( size_type i = 0; first != last; first++ ) {
 
@@ -419,10 +419,11 @@ class vector {
 
 		/* assign: by range, replace with range provided by iterators */
 		template< class InputIterator >
-			void assign( InputIterator first,
-						 typename enable_if< is_pointer< typename InputIterator::pointer >::value, InputIterator >::type last ) {
+			void assign( InputIterator first, InputIterator last,
+						 typename enable_if< !is_integral< InputIterator >::value, InputIterator >::type* switch_type = NULL ) {
 
-				size_type _new_vector_size = last - first;
+				( void )switch_type;
+				size_type _new_vector_size = std::distance( first, last );
 
 				for ( size_type i = 0; i < _vector_size; i++ ) {
 
@@ -510,10 +511,11 @@ class vector {
 
 		/* insert: by range of iterators */
 		template< class InputIterator >
-			void insert( iterator position, InputIterator first, 
-			     		 typename enable_if< is_pointer< typename InputIterator::pointer >::value, InputIterator >::type last ) {
+			void insert( iterator position, InputIterator first, InputIterator last,
+						 typename enable_if< !is_integral< InputIterator >::value, InputIterator >::type* switch_type = NULL ) {
 			
-				difference_type _it_len = last - first;
+				( void )switch_type;
+				difference_type _it_len = std::distance( first, last );
 				difference_type _offs = position - begin( );
 				size_t			_len = static_cast< size_t >( end( ) - position );
 				if ( _vector_size + _it_len > _vector_cap ) _realloc_mem_to_array( _it_len );
@@ -529,7 +531,7 @@ class vector {
 
 			difference_type	_offs = position - begin( );
 			pointer			_p = _vector_arr + _offs;
-			size_t			_len = static_cast< size_t >( end( ) - position - 2 );
+			size_t			_len = static_cast< size_t >( end( ) - position - 1 ); // no
 
 			_vector_alloc.destroy( _p );
 			if ( _len ) memmove( _p, _p + 1, ( _len ) * sizeof( value_type ) );

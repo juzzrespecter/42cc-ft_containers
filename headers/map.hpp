@@ -13,6 +13,7 @@
 #ifndef __MAP_HPP__
 #define __MAP_HPP__
 #include <functional>
+#include <iostream> // delete
 #include <string> // error msg when throw exception
 #include <memory>
 #include <limits>
@@ -99,7 +100,7 @@ class map {
 
 		}
 
-		~map( void ) { }
+		~map( ) { }
 
 		map& operator=( const map& other ) {
 
@@ -227,14 +228,36 @@ class map {
 	
 		void erase( iterator first, iterator last ) {
 
-			iterator	aux;
+			/*iterator	aux;
 			while ( first != last ) {
 				
+				std::cout << "now  ( " << first->first << ", " << first->second << " )\n";
 				aux = first;
 				++aux;
+				if ( aux != end())
+					std::cout << "next ( " << aux->first << ", " << aux->second << " )\n";
 				erase( first );
 				first = aux;
-			}
+			}*/
+/*
+			key_type	key_next;
+			if ( last != end( ))
+					std::cout << "last ( " << last->first << ", " << last->second << " )\n";
+			while ( first != last ) {
+
+				key_next = first->first;
+				std::cout << "now  ( " << first->first << ", " << first->second << " )\n";
+				if ( last != end( ))
+					std::cout << "last ( " << last->first << ", " << last->second << " )\n";
+				std::cout << "( " << first.base( ) << ", " << last.base( ) << "\n";
+				erase( first );
+				first = upper_bound( key_next );
+				std::cout << "size: " << size( ) << "\n";
+				if ( first != last || first != end( ))
+					std::cout << "next ( " << first->first << ", " << first->second << " )\n";
+			}*/
+			while ( first != last )
+				first = _map_tree.erase( first );
 		}
 
 		void swap( map& other ) {

@@ -170,7 +170,7 @@ static bool	operatoraccess_test(void) {
 	fill_tree_map(fm,sm);
 
 	long	fm_res = 0, sm_res = 0;
-	for(size_t i = 0; i < fm.size(); i++){
+	for(size_t i = 0; i < 1e5; i++){
 		fm_res = fm[i];
 		sm_res = sm[i];
 	}
@@ -223,7 +223,7 @@ static bool	clear_test(void) {
 	ft_map	mp;
 
 	mp.clear();
-	for(int i = 0; i < 1e7; i++) mp.insert(ft::make_pair(rand(),rand()));
+	for(int i = 0; i < 1e5; i++) mp.insert(ft::make_pair(rand(),rand()));
 	mp.clear();
 	return mp.size() == 0 && mp.begin() == mp.end();
 }
@@ -293,10 +293,12 @@ static bool	insert_test(void) {
 	}
 	/* -- range overload -- */
 	{
-		ft_map	fm;
-		std_map	sm;
-		for(int i = 0;i < 1e6;i++)sm.insert(std::make_pair(rand(),rand()));
-		fm.insert(fm.begin(), fm.end());
+		ft_map	fmrange, fm;
+		std_map	smrange, sm;
+
+		fill_tree_map(fmrange, smrange);
+		fm.insert(fmrange.begin(), fmrange.end());
+		sm.insert(smrange.begin(),smrange.end());
 		test_result = (test_result) && equal_test_map(fm,sm);
 	}
 	return test_result;
@@ -558,7 +560,6 @@ static bool stress_test(void){
 	sm.erase(sm.begin(),sm.end());
 
 	time_std = get_time() - time_std;
-	
 	long	time_ft = get_time();
 	ft_map fm;
 	for(int i = 0; i < 1e7; i++)
@@ -571,8 +572,11 @@ static bool stress_test(void){
 
 void map_tests( void ) {
 	std::cout << "\n[ map test: compare behaviour with std::map ]\n\n";
-	for (int i = 0; i < N_MAP_TEST; i++)
-		std::cout << std::setw(30) << test_name_table[i] << ": " << ((func_table[i])() ? OK : KO) << "\n";
-	std::cout << "\n< performance test... : " << ((stress_test()) ? OK : KO) << " >\n";
+	for (int i = 0; i < N_MAP_TEST; i++) {
+		std::cout << std::setw(30) << test_name_table[i] << ": "; std::cout.flush();
+		std::cout << ((func_table[i]( )) ? OK : KO) << "\n";
+	}
+	std::cout << "\n< performance test... : "; std::cout.flush();
+	std::cout << ((stress_test()) ? OK : KO) << " >\n";
 }
 

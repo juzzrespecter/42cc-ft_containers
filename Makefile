@@ -40,34 +40,37 @@ GREEN = "\033[32m"
 RED   = "\033[31m"
 END   = "\033[0m"
 
+OK	  = $(GREEN) "( ͡° ͜ʖ ͡°)" $(END)
+KO 	  = $(RED) ¯\_(ツ)_/¯ $(END)
+
 all:	$(NAME)
 
 $(NAME):	$(OBJ) $(HEADER)
 	@$(AR) $(NAME) $(OBJ)
-	@echo "$(GREEN) $(NAME) created successfully$(END)"
+	@echo $(GREEN) "$(NAME) created successfully" $(END)
 
 test:	$(TEST)
 
 $(TEST):	$(NAME) $(OBJ_TEST) $(HEADER_TEST)
 	@$(CXX) $(CXXFLAGS) $(DEBUG) -o $(TEST) $(OBJ_TEST) $(NAME)
-	@echo "$(GREEN) $(TEST) created successfully$(END)"
+	@echo $(GREEN) "$(TEST) created successfully" $(END)
 
-$(DIR_OBJ)%.o: $(DIR_TEST)%.cpp
+$(DIR_OBJ)%.o: $(DIR_TEST)%.cpp $(HEADER_TEST)
 	@$(CXX) $(CXXFLAGS) $(DEBUG) -c $< -I $(DIR_HEADER)
-	@echo $(GREEN) "( ͡° ͜ʖ ͡°)" $(END)"\t $< compiled successfully"
+	@echo $(OK) "\t $< compiled successfully"
 	@mkdir -p $(DIR_OBJ)
 	@mv $(@F) $(DIR_OBJ)
 
 $(DIR_OBJ)%.o:	$(SRC) $(HEADER)
 	@$(CXX) $(CXXFLAGS) -c $(SRC)
-	@echo $(GREEN) "( ͡° ͜ʖ ͡°)" $(END)"\t $< compiled successfully"
+	@echo $(OK) "\t $< compiled successfully"
 	@mkdir -p $(DIR_OBJ)
 	@mv $(@F) $(DIR_OBJ)
 
 $(DIR_TEST)%.cpp:
-	@echo "$(RED) ¯\_(ツ)_/¯ $(END)\t $<: file not found."
+	@echo $(KO) "\t $<: file not found."
 $(SRC):
-	@echo "$(RED) ¯\_(ツ)_/¯ $(END)\t $(SRC): file not found."
+	@echo $(KO) "\t $(SRC): file not found."
 
 clean:
 	@echo " removed $(NAME)"

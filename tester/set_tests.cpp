@@ -187,7 +187,7 @@ static bool	clear_test(void) {
 	ft_set	fs;
 
 	fs.clear();
-	for(int i = 0; i < 1e7; i++) fs.insert(i);
+	for(int i = 0; i < 1e5; i++) fs.insert(i);
 	fs.clear();
 	return fs.size() == 0 && fs.begin() == fs.end();
 }
@@ -257,11 +257,18 @@ static bool	insert_test(void) {
 	}
 	/* -- range overload -- */
 	{
-		ft_set	fs;
+		/*ft_set	fs;
 		std_set	ss;
 		for(int i = 0;i < 1e6;i++)ss.insert(rand());
 		fs.insert(ss.begin(), ss.end());
-		test_result = (test_result) && equal_test_set(fs,ss);
+		test_result = (test_result) && equal_test_set(fs,ss);*/
+		ft_set	fmrange, fm;
+		std_set	smrange, sm;
+
+		fill_tree_set(fmrange, smrange);
+		fm.insert(fmrange.begin(), fmrange.end());
+		sm.insert(smrange.begin(),smrange.end());
+		test_result = (test_result) && equal_test_set(fm,sm);
 	}
 	return test_result;
 }

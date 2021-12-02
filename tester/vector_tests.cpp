@@ -34,6 +34,12 @@ static bool	iterator_test(void) {
 			ftv.push_back(val);
 			stdv.push_back(val);
 		}
+		ft_iterator i1 = ftv.begin();
+		i1 += 34;
+		i1 -= 33;
+		ft_iterator i2  = i1 + 34;
+		i2 - i1;
+
 		ft_iterator	it = ftv.begin() + 1e2;
 		std_iterator it_s = stdv.begin() + 1e2;
 		test_result = (*it == *it_s && *ftv.begin() == *stdv.begin() && *(--ftv.end()) == *(--stdv.end()));

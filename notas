@@ -1,8 +1,5 @@
-* TEST = compares con std
-
 * usar f::cont con algortimos de std
 * check stress test con insert y swap
-* int* == iterator ( is_iterator ? probar overloads con distintos enable_if cond. )
-* operaciones - / + entre iteradores de vectores
 * max_size en map ( probablemente llame a allocator_type< Node >::max_size( ) )
 * red black tree demo en set( *(iterator.root( ) )
+* erase iterator overload = faena que hacer

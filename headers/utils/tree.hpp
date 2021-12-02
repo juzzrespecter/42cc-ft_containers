@@ -12,6 +12,7 @@
 
 #ifndef __TREE_HPP__
 #define __TREE_HPP__
+#include <iostream> // tmp
 #include "utility.hpp"
 #include "iterator.hpp"
 #include "algorithm.hpp"
@@ -339,8 +340,8 @@ class _tree {
 
 		size_type	max_size( void ) const {
 
-			//return _tree_node_alloc.max_size( );
-			return std::numeric_limits< difference_type >::max( ) / sizeof( value_type ); // test why does not work
+			return std::min< size_type >( std::numeric_limits< difference_type >::max( ),
+										   _tree_node_alloc.max_size( ) ); // test why does not work
 		}
 
 		void	clear( void ) {
@@ -371,11 +372,12 @@ class _tree {
 		 * tree insert hint optimizations:
 		 *
 		 * case 1 : empty tree - insert in root.
-		 * case 2 : hint with same key as value - do nothing, return.
-		 * case 3 : hint points to last node in tree - insert in previous node.
-		 * case 4 : hint points to node comparing less than value,
-		 *          hint's inorder successor points to node comparing greater than value,
-		 * 			search for insert position from hint's ptr, then insert.
+		 * case 2 : hint == end( ), if last element is less than value, insert in last pos. else insert std
+		 * case 3 : hint with same key as value - do nothing, return.
+		 * case 4 : hint == begin( ) && value less than first element, insert in first pos.
+		 * case 4 : hint points to node comparing more than value,
+		 *          hint's inorder predecessor points to node comparing lower than value,
+		 * 			search for insert position from hint's pred ptr, then insert.
 		 * 
 		 * if insertion cannot be optimized, call insert( value ) overload.
 		 */
@@ -385,17 +387,30 @@ class _tree {
 			node*	n;
 
 			if ( begin( ) == end( ) ) return _insert_root( value );
-			if ( *hint == value ) return hint;
-			if ( ++hint == end( ) && value_comp( )( *( --end( ) ), value ) ) {
+			if ( hint == end( ) ) {
 
-				n = _new_node( ( --end( ) ).base( ), value );
+				if ( value_comp( )( *( --end( ) ), value ) ) {
+
+					n = _new_node( ( --end( ) ).base( ), value );
+					_insert_node_rb( n );
+					++_tree_size;
+					return iterator( n, &_tree_root );
+				}
+				else return insert( value ).first;
+			}
+			if ( *hint == value ) return hint;
+			if ( hint == begin( ) && value_comp( )( value, *hint ) ) {
+
+				n = _new_node( ( begin( ) ).base( ), value );
 				_insert_node_rb( n );
+				++_tree_size;
 				return iterator( n, &_tree_root );
 			}
-			if ( value_comp( )( *hint, value ) && value_comp( )( value, *( ++iterator( hint ) ) ) ) {
+			if ( value_comp( )( value, *hint ) && value_comp( )( *( --hint ), value ) ) {
 
 				n = _new_node( _find_in_subtree( hint.base( ), value ), value );
 				_insert_node_rb( n );
+				++_tree_size;
 				return iterator( n, &_tree_root );
 			}
 			return insert( value ).first;
@@ -411,7 +426,7 @@ class _tree {
 			return ERASE_SUCCESS;
 		}
 
-		void	erase( iterator it ) {
+		iterator	erase( iterator it ) {
 
 			_tree_size--;
 			if ( it.base( ) == _tree_root && !_tree_size ) {
@@ -419,8 +434,9 @@ class _tree {
 				_tree_alloc.destroy( it.base( ) );
 				_tree_alloc.deallocate( it.base( ), 1 );
 				_tree_root = NULL;
-				return ;
+				return end( );
 			}
+			std::cout << "[ 1 NODE TO DELETE: " << it->first << ", " << it->second << " ]\n";
 			if ( is_inner_node( it.base( ) ) ) {
 
 				iterator	aux_swap_it( it );
@@ -430,17 +446,26 @@ class _tree {
 				it++;
 			}
 			_delete_node_cases( it.base( ) );
+			std::cout << "[ 2 NODE TO DELETE: " << it->first << ", " << it->second << " ]\n";
+			//node*	_next_ptr = it.base( )->parent;
 			_tree_alloc.destroy( it.base( ) );
 			_tree_alloc.deallocate( it.base( ), 1 );
+			return iterator( _next_ptr, &_tree_root );
 		}
 
 		void	swap( _tree& other ) {
 
-			node*	aux_root;
+			node*		_aux_root;
+			size_type	_aux_size;
 
-			aux_root = _tree_root;
+			_aux_root = _tree_root;
+			_aux_size = _tree_size;
+
 			_tree_root = other._tree_root;
-			other._tree_root = aux_root;
+			other._tree_root = _aux_root;
+
+			_tree_size = other._tree_size;
+			other._tree_size = _aux_size;
 		}
 
 		iterator find( const value_type& value ) {

@@ -159,32 +159,38 @@ class reverse_iterator {
 			return *this;
 		}
 
-		friend bool operator==( const reverse_iterator& lhs, const reverse_iterator& rhs ) {
+		template< class It1, class It2 >
+		friend bool operator==( const reverse_iterator< It1 >& lhs, const reverse_iterator< It2 >& rhs ) {
 
 			return ( lhs.base( ) == rhs.base( ) );
 		}
 
-		friend bool operator!=( const reverse_iterator& lhs, const reverse_iterator& rhs ) {
+		template< class It1, class It2 >
+		friend bool operator!=( const reverse_iterator< It1 >& lhs, const reverse_iterator< It2 >& rhs ) {
 
 			return ( lhs.base( ) != rhs.base( ) );
 		}
 
-		friend bool operator<( const reverse_iterator& lhs, const reverse_iterator& rhs ) {
+		template< class It1, class It2 >
+		friend bool operator<( const reverse_iterator< It1 >& lhs, const reverse_iterator< It2 >& rhs ) {
 
 			return ( lhs.base( ) > rhs.base( ) );
 		}
 
-		friend bool operator>( const reverse_iterator& lhs, const reverse_iterator& rhs ) {
+		template< class It1, class It2 >
+		friend bool operator>( const reverse_iterator< It1 >& lhs, const reverse_iterator< It2 >& rhs ) {
 
 			return ( lhs.base( ) < rhs.base( ) );
 		}
 
-		friend bool operator<=( const reverse_iterator& lhs, const reverse_iterator& rhs ) {
+		template< class It1, class It2 >
+		friend bool operator<=( const reverse_iterator< It1 >& lhs, const reverse_iterator< It2 >& rhs ) {
 
 			return ( lhs.base( ) >= rhs.base( ) );
 		}
 
-		friend bool operator>=( const reverse_iterator& lhs, const reverse_iterator& rhs ) {
+		template< class It1, class It2 >
+		friend bool operator>=( const reverse_iterator< It1 >& lhs, const reverse_iterator< It2 >& rhs ) {
 
 			return ( lhs.base( ) <= rhs.base( ) );
 		}
@@ -197,7 +203,8 @@ class reverse_iterator {
 			return _tmp;
 		}
 
-		friend difference_type operator-( const reverse_iterator& lhs, const reverse_iterator& rhs ) {
+		template< class It1, class It2 >
+		friend difference_type operator-( const reverse_iterator< It1 >& lhs, const reverse_iterator< It2 >& rhs ) {
 
 			return rhs.base( ) - lhs.base( );
 		}
