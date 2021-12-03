@@ -20,6 +20,8 @@
 #define	CYAN	"\033[33m"
 #define	END	"\033[0m"
 
+#include "../print_a_tree.hpp" // fix later
+
 #define OK	"\033[32m [ OK ] \033[0m"	
 #define KO	"\033[31m [ KO ] \033[0m"
 #define ID( x )	CYAN<<"[ "<<x<<" ]"<<END

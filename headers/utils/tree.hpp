@@ -447,7 +447,7 @@ class _tree {
 			}
 			_delete_node_cases( it.base( ) );
 			std::cout << "[ 2 NODE TO DELETE: " << it->first << ", " << it->second << " ]\n";
-			//node*	_next_ptr = it.base( )->parent;
+			node*	_next_ptr = it.base( )->parent;
 			_tree_alloc.destroy( it.base( ) );
 			_tree_alloc.deallocate( it.base( ), 1 );
 			return iterator( _next_ptr, &_tree_root );
