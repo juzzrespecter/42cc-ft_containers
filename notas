@@ -3,3 +3,4 @@
 * max_size en map ( probablemente llame a allocator_type< Node >::max_size( ) )
 * red black tree demo en set( *(iterator.root( ) )
 * erase iterator overload = faena que hacer
+  [ UPDATE ] _swap_nodes se carga la estructura del arbol cuando los nodos a intercambiar son parientes directos <-- !!!!

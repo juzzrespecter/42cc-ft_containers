@@ -16,11 +16,11 @@
 #include <set>
 #include <vector>
 #include <map>
+#include <unistd.h> // debug
 
 #define	CYAN	"\033[33m"
-#define	END	"\033[0m"
-
-#include "../print_a_tree.hpp" // fix later
+#define	END		"\033[0m"
+#define RED		"\033[31m"
 
 #define OK	"\033[32m [ OK ] \033[0m"	
 #define KO	"\033[31m [ KO ] \033[0m"
@@ -87,20 +87,54 @@ bool	equal_test_set(Set1& fm, Set2& sm){
 	return sum_f == sum_s;
 }
 
+/* ================= PRINT TREE =================== */
 
-/*template< class Node >
-void	print_tree( Node n, int lvl ) {
+namespace ft {
 
+template< class T >
+void print_node( T n, typename ft::enable_if< ft::is_integral< T >::value, T >::type* switch_on = NULL ) {
+	( void )switch_on;
+	std::cout << "< " << n << " >";
+}
+
+template< class T1, class T2 >
+void print_node( ft::pair< T1, T2 > n ) {
+	std::cout << "< " << n.first << " >";
+}
+
+template< class Node >
+void print_recursion( Node* n, int lvl ) {
+
+	if( lvl ) std::cout << "-----";
 	if ( !n ) {
-
 		std::cout << "<nil>";
+		usleep(1500);
 		return ;
 	}
-	print_node( n );
-	print_tree( n->child[ 0 ] );
-	std::cout << "\n";// indent( lvl ); 
-	print_tree( n->child[ 1 ] );
-}*/
+	if( n->color( ) == 1 ) 
+		std::cout << RED; 
+	print_node( *( *n ) ); std::cout << END;
+	print_recursion( n->child[0], lvl + 1 );
+	std::cout << "\n";
+	for( int i = 0; i < lvl; i++ ) 
+		std::cout << "          ";
+	std::cout << "     ";
+	print_recursion( n->child[1], lvl + 1 );
+}
+
+template< class Tree >
+void	print( Tree& tr ) {
+
+	typename Tree::iterator	it = tr.begin( );
+
+	std::cout << "\n-*****************-\n";
+	print_recursion( *( it.root( ) ), 0 );
+	std::cout << "\n-*****************-\n";
+}
+
+}
+
+/* ================================================== */
 
 template< class T, class Cont = ft::vector< T > >
 class MutantStack : public ft::stack< T, Cont > {

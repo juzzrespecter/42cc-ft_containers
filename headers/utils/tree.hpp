@@ -19,6 +19,7 @@
 #include "type_traits.hpp"
 #include <limits> // why??
 #include <functional> // why??
+#include "tester.hpp"
 
 namespace ft {
 
@@ -428,29 +429,25 @@ class _tree {
 
 		iterator	erase( iterator it ) {
 
-			_tree_size--;
-			if ( it.base( ) == _tree_root && !_tree_size ) {
+			node*	_ptr = it.base( );
+			node*	_nxt;
 
-				_tree_alloc.destroy( it.base( ) );
-				_tree_alloc.deallocate( it.base( ), 1 );
+			_tree_size--;
+			if ( _ptr == _tree_root && !_tree_size ) {
+
+				_tree_alloc.destroy( _ptr );
+				_tree_alloc.deallocate( _ptr, 1 );
 				_tree_root = NULL;
 				return end( );
 			}
-			std::cout << "[ 1 NODE TO DELETE: " << it->first << ", " << it->second << " ]\n";
-			if ( is_inner_node( it.base( ) ) ) {
 
-				iterator	aux_swap_it( it );
-
-				aux_swap_it++;
-				*( it.base( ) ) = *( aux_swap_it.base( ) );
-				it++;
-			}
-			_delete_node_cases( it.base( ) );
-			std::cout << "[ 2 NODE TO DELETE: " << it->first << ", " << it->second << " ]\n";
-			node*	_next_ptr = it.base( )->parent;
-			_tree_alloc.destroy( it.base( ) );
-			_tree_alloc.deallocate( it.base( ), 1 );
-			return iterator( _next_ptr, &_tree_root );
+			_nxt = ( ++it ).base( );
+			if ( is_inner_node( _ptr ) ) 
+				_swap_nodes( _ptr, _nxt );
+			_delete_node_cases( _ptr );
+			_tree_alloc.destroy( _ptr );
+			_tree_alloc.deallocate( _ptr, 1 );
+			return iterator( _nxt, &_tree_root );
 		}
 
 		void	swap( _tree& other ) {
@@ -507,7 +504,6 @@ class _tree {
 			node* new_root = old_root->child[ !dir ];
             
 			if ( !new_root ) return ;
-
 			if ( old_root == root( ) ) {
 
 				_tree_root = new_root;
@@ -636,7 +632,7 @@ class _tree {
 				&_tree::_delete_node_rb_case_4
 			};
 
-			int	case_id = ( sibling_of( n )->color( ) == BLACK );
+			int	case_id = ( is_color( sibling_of( n ) ) == BLACK );
 			if ( case_id && is_color( far_child_of( n ) ) == BLACK ) {
 
 				case_id += ( is_color( near_child_of( n ) ) == RED ) ? 1 : 2;
@@ -647,11 +643,13 @@ class _tree {
 
 		void	_delete_node_case_1( node* n ) { 
 
+			std::cout << "[ DELETE NODE CASE 1 ]\n";
 			n->parent->child[ whoami( n ) ] = NULL;
 		}
 
 		void	_delete_node_case_2( node* child ) { 
 
+			std::cout << "[ DELETE NODE CASE 2 ]\n";
 			node*	n = child->parent;
 
 			child->recolor( );
@@ -659,6 +657,8 @@ class _tree {
 
 			if ( n == root( ) ) {
 
+				std::cout << "[ P = " << (*(*n)).first << ", C = " << (*(*child)).first << " ]\n";
+				std::cout << "IN ROOT\n";
 				_tree_root = child;
 			} else {
 
@@ -669,6 +669,7 @@ class _tree {
 
 		void	_delete_node_rb_case_1( node* n ) {
 
+			std::cout << "[ DELETE NODE RB CASE 1 ]\n";
 			sibling_of( n )->recolor( n->parent->color( ) );
 			n->parent->recolor( RED );
 			rotate( n->parent, whoami( n ) );
@@ -677,6 +678,7 @@ class _tree {
 
 		void	_delete_node_rb_case_2( node* n ) {
 
+			std::cout << "[ DELETE NODE RB CASE 2 ]\n";
 			sibling_of( n )->recolor( n->parent->color( ) );
 			n->parent->recolor( BLACK );
 			far_child_of( n )->recolor( BLACK );
@@ -685,6 +687,7 @@ class _tree {
 
 		void	_delete_node_rb_case_3( node* n ) {
 
+			std::cout << "[ DELETE NODE RB CASE 3 ]\n";
 			near_child_of( n )->recolor( BLACK );
 			sibling_of( n )->recolor( RED );
 			rotate( sibling_of( n ), !whoami( n ) );
@@ -693,6 +696,7 @@ class _tree {
 
 		void	_delete_node_rb_case_4( node* n ) {
 
+			std::cout << "[ DELETE NODE RB CASE 4 ]\n";
 			sibling_of( n )->recolor( RED );
 			if ( n->parent->color( ) == BLACK ) {
 				
@@ -702,6 +706,32 @@ class _tree {
 				n->parent->recolor( );
 			}
 			return ;
+		}
+
+		/* if something goes wrong blame this little pos */
+		void	_swap_nodes( node* _n1, node* _n2 ) {
+			
+			node*	_aux_n[3] = { _n1->parent, _n1->child[ LEFT ], _n1->child[ RIGHT ] };
+			int		_n_id[2] = { ( _n1->parent ) ? whoami( _n1 ) : -1, ( _n2->parent ) ? whoami( _n2 ) : -1 };
+
+			_n1->parent = _n2->parent;
+			_n1->child[ LEFT ] = _n2->child[ LEFT ];
+			_n1->child[ RIGHT ] = _n2->child[ RIGHT ];
+
+			_n2->parent = _aux_n[0];
+			_n2->child[ LEFT ] = _aux_n[1];
+			_n2->child[ RIGHT ] = _aux_n[2];
+
+			if ( _n1->parent ) _n1->parent->child[ _n_id[0] ] = _n1;
+			if ( _n1->child[ LEFT ] ) _n1->child[ LEFT ]->parent = _n1;
+			if ( _n1->child[ RIGHT ] ) _n1->child[ RIGHT ]->parent = _n1;
+
+			if ( _n2->parent ) _n2->parent->child[ _n_id[1] ] = _n2;
+			if ( _n2->child[ LEFT ] ) _n2->child[ LEFT ]->parent = _n2;
+			if ( _n2->child[ RIGHT ] ) _n2->child[ RIGHT ]->parent = _n2;
+
+			if ( _n1 == root( ) ) _tree_root = _n2;
+			print( *this );
 		}
 
 		/********************************************************************************/

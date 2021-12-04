@@ -227,11 +227,9 @@ class vector {
 		}
 
 		template< class InputIterator >
-		vector( InputIterator first, InputIterator last,
-		typename enable_if< !is_integral< InputIterator >::value, InputIterator >::type* switch_type = NULL,
+		vector( InputIterator first,// InputIterator last,
+		typename enable_if< is_pointer< typename InputIterator::pointer >::value, InputIterator >::type last,
 		const allocator_type& alloc = allocator_type( ) ) {
-
-			( void )switch_type;
 			_vector_alloc = alloc;
 			_vector_size = std::distance( first, last );
 			_vector_cap = std::distance( first, last );
@@ -419,10 +417,9 @@ class vector {
 
 		/* assign: by range, replace with range provided by iterators */
 		template< class InputIterator >
-			void assign( InputIterator first, InputIterator last,
-						 typename enable_if< !is_integral< InputIterator >::value, InputIterator >::type* switch_type = NULL ) {
+			void assign( InputIterator first,// InputIterator last,
+						 typename enable_if< is_pointer< typename InputIterator::pointer >::value, InputIterator >::type last = NULL ) {
 
-				( void )switch_type;
 				size_type _new_vector_size = std::distance( first, last );
 
 				for ( size_type i = 0; i < _vector_size; i++ ) {
@@ -511,10 +508,9 @@ class vector {
 
 		/* insert: by range of iterators */
 		template< class InputIterator >
-			void insert( iterator position, InputIterator first, InputIterator last,
-						 typename enable_if< !is_integral< InputIterator >::value, InputIterator >::type* switch_type = NULL ) {
+			void insert( iterator position, InputIterator first,// InputIterator last,
+						 typename enable_if< is_pointer< typename InputIterator::pointer >::value, InputIterator >::type last ) {
 			
-				( void )switch_type;
 				difference_type _it_len = std::distance( first, last );
 				difference_type _offs = position - begin( );
 				size_t			_len = static_cast< size_t >( end( ) - position );
