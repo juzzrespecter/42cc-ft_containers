@@ -2,5 +2,5 @@
 * check stress test con insert y swap
 * max_size en map ( probablemente llame a allocator_type< Node >::max_size( ) )
 * red black tree demo en set( *(iterator.root( ) )
-* erase iterator overload = faena que hacer
-  [ UPDATE ] _swap_nodes se carga la estructura del arbol cuando los nodos a intercambiar son parientes directos <-- !!!!
+* problemas con iteradores y swapped trees
+* acceso a iteradores que retornan find( ) destruyen los nodos ( allocator.destroy en el destructor del nodo ) por que hace eso ?? increible pregunta
