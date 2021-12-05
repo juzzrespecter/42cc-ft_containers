@@ -712,23 +712,27 @@ class _tree {
 		void	_swap_nodes( node* _n1, node* _n2 ) {
 			
 			node*	_aux_n[3] = { _n1->parent, _n1->child[ LEFT ], _n1->child[ RIGHT ] };
-			int		_n_id[2] = { ( _n1->parent ) ? whoami( _n1 ) : -1, ( _n2->parent ) ? whoami( _n2 ) : -1 };
+			int	_n_id[2] = { 
+				( _n1->parent ) ? whoami( _n1 ) : -1,
+			       	( _n2->parent ) ? whoami( _n2 ) : -1 
+			};
 
-			_n1->parent = _n2->parent;
+			_n1->parent = _n2->parent; // loop
 			_n1->child[ LEFT ] = _n2->child[ LEFT ];
 			_n1->child[ RIGHT ] = _n2->child[ RIGHT ];
 
-			_n2->parent = _aux_n[0];
-			_n2->child[ LEFT ] = _aux_n[1];
-			_n2->child[ RIGHT ] = _aux_n[2];
-
-			if ( _n1->parent ) _n1->parent->child[ _n_id[0] ] = _n1;
+			if ( _n1->parent ) _n1->parent->child[ _n_id[0] ] = _n1; // loop
 			if ( _n1->child[ LEFT ] ) _n1->child[ LEFT ]->parent = _n1;
 			if ( _n1->child[ RIGHT ] ) _n1->child[ RIGHT ]->parent = _n1;
 
+			_n2->parent = _aux_n[0];
+			_n2->child[ LEFT ] = _aux_n[1]; // loop
+			_n2->child[ RIGHT ] = _aux_n[2]; // loop
+
+
 			if ( _n2->parent ) _n2->parent->child[ _n_id[1] ] = _n2;
-			if ( _n2->child[ LEFT ] ) _n2->child[ LEFT ]->parent = _n2;
-			if ( _n2->child[ RIGHT ] ) _n2->child[ RIGHT ]->parent = _n2;
+			if ( _n2->child[ LEFT ] ) _n2->child[ LEFT ]->parent = _n2; // loop
+			if ( _n2->child[ RIGHT ] ) _n2->child[ RIGHT ]->parent = _n2; // loop
 
 			if ( _n1 == root( ) ) _tree_root = _n2;
 			print( *this );
