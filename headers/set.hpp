@@ -25,7 +25,7 @@ class set {
 
     private:
         typedef ft::_tree< Key, Compare, Alloc >    set_tree;
-        typedef typename set_tree::node                      set_node;
+        typedef typename set_tree::node             set_node;
     public:
         typedef Key         key_type;
         typedef Key         value_type;
@@ -40,7 +40,7 @@ class set {
         typedef typename allocator_type::pointer          pointer;
         typedef typename allocator_type::const_pointer    const_pointer;
 
-        typedef typename set_tree::iterator          iterator;
+        typedef typename set_tree::const_iterator    iterator;
         typedef typename set_tree::const_iterator    const_iterator;
 
         typedef ft::reverse_iterator< iterator >        reverse_iterator;
@@ -176,10 +176,8 @@ class set {
 
         void erase( iterator first, iterator last ) {
 
-            for( ; first != last; first++ ) {
-
-                _set_tree.erase( first );
-            }
+            while ( first != last )
+                first = _set_tree.erase( first );
         }
 
         size_type erase( const key_type& key ) {
@@ -238,7 +236,7 @@ class set {
             if ( !size( ) ) return end( );
             iterator	it = _set_tree.find( key );
 
-			return  ( *it < key ) ? it++ : it;
+			return  ( *it < key ) ? ++it : it;
         }
 
         const_iterator lower_bound( const key_type& key ) const {
@@ -246,7 +244,7 @@ class set {
             if ( !size( ) ) return end( );
             const_iterator	it = _set_tree.find( key );
 
-			return  ( *it < key ) ? it++ : it;
+			return  ( *it < key ) ? ++it : it;
         }
 
         iterator upper_bound( const key_type& key ) {
@@ -254,7 +252,7 @@ class set {
             if ( !size( ) ) return end( );
             iterator	it = _set_tree.find( key );
 
-			return  ( *it <= key ) ? it++ : it;
+			return  ( *it <= key ) ? ++it : it;
         }
 
         const_iterator upper_bound( const key_type& key ) const {
@@ -262,7 +260,7 @@ class set {
             if ( !size( ) ) return end( );
             const_iterator	it = _set_tree.find( key );
 
-			return  ( *it <= key ) ? it++ : it;
+			return  ( *it <= key ) ? ++it : it;
         }
 
         key_compare key_comp( void ) const {

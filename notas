@@ -1,6 +1,4 @@
 * usar f::cont con algortimos de std
-* check stress test con insert y swap
-* max_size en map ( probablemente llame a allocator_type< Node >::max_size( ) )
-* red black tree demo en set( *(iterator.root( ) )
-* problemas con iteradores y swapped trees
-* acceso a iteradores que retornan find( ) destruyen los nodos ( allocator.destroy en el destructor del nodo ) por que hace eso ?? increible pregunta
+* max_size en map ( fallo en algunos casos )
+* max_size en set ( fallo en todos los casos )
+* nueva estructura en makefile

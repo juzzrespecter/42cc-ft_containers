@@ -19,6 +19,8 @@ typedef std::pair<std_iterator,bool>	ins_ret_s;
 typedef ft::pair<ft_iterator,ft_iterator>		ret_eq_f;
 typedef	std::pair<std_iterator,std_iterator>	ret_eq_s;
 
+static std::string buffer;
+
 static bool	iterator_test( void ) {
 
 	ft_set	fs;
@@ -262,13 +264,13 @@ static bool	insert_test(void) {
 		for(int i = 0;i < 1e6;i++)ss.insert(rand());
 		fs.insert(ss.begin(), ss.end());
 		test_result = (test_result) && equal_test_set(fs,ss);*/
-		ft_set	fmrange, fm;
-		std_set	smrange, sm;
+		ft_set	fsrange, fs;
+		std_set	ssrange, ss;
 
-		fill_tree_set(fmrange, smrange);
-		fm.insert(fmrange.begin(), fmrange.end());
-		sm.insert(smrange.begin(),smrange.end());
-		test_result = (test_result) && equal_test_set(fm,sm);
+		fill_tree_set(fsrange, ssrange);
+		fs.insert(fsrange.begin(), fsrange.end());
+		ss.insert(ssrange.begin(),ssrange.end());
+		test_result = (test_result) && equal_test_set(fs,ss);
 	}
 	return test_result;
 }
@@ -430,45 +432,45 @@ bool observers_test(void){
 
 static bool	comp_operators_test(void){
 	bool	test_result;
-	ft_set	fm;
-	std_set	sm;
+	ft_set	fs;
+	std_set	ss;
 
-	ft_set	fm_2;
-	std_set	sm_2;
-	test_result = (fm == fm_2) == (sm == sm_2) &&
-				  (fm != fm_2) == (sm != sm_2) &&
-				  (fm >  fm_2) == (sm >  sm_2) &&
-				  (fm >= fm_2) == (sm >= sm_2) &&
-				  (fm <  fm_2) == (sm <  sm_2) &&
-				  (fm <= fm_2) == (sm <= sm_2);
+	ft_set	fs_2;
+	std_set	ss_2;
+	test_result = (fs == fs_2) == (ss == ss_2) &&
+				  (fs != fs_2) == (ss != ss_2) &&
+				  (fs >  fs_2) == (ss >  ss_2) &&
+				  (fs >= fs_2) == (ss >= ss_2) &&
+				  (fs <  fs_2) == (ss <  ss_2) &&
+				  (fs <= fs_2) == (ss <= ss_2);
 
-	fill_tree_set(fm_2,sm_2);
+	fill_tree_set(fs_2,ss_2);
 	test_result = (test_result) &&
-				  (fm == fm_2) == (sm == sm_2) &&
-				  (fm != fm_2) == (sm != sm_2) &&
-				  (fm >  fm_2) == (sm >  sm_2) &&
-				  (fm >= fm_2) == (sm >= sm_2) &&
-				  (fm <  fm_2) == (sm <  sm_2) &&
-				  (fm <= fm_2) == (sm <= sm_2);
+				  (fs == fs_2) == (ss == ss_2) &&
+				  (fs != fs_2) == (ss != ss_2) &&
+				  (fs >  fs_2) == (ss >  ss_2) &&
+				  (fs >= fs_2) == (ss >= ss_2) &&
+				  (fs <  fs_2) == (ss <  ss_2) &&
+				  (fs <= fs_2) == (ss <= ss_2);
 	
-	fill_tree_set(fm,sm);
+	fill_tree_set(fs,ss);
 	test_result = (test_result) &&
-				  (fm == fm_2) == (sm == sm_2) &&
-				  (fm != fm_2) == (sm != sm_2) &&
-				  (fm >  fm_2) == (sm >  sm_2) &&
-				  (fm >= fm_2) == (sm >= sm_2) &&
-				  (fm <  fm_2) == (sm <  sm_2) &&
-				  (fm <= fm_2) == (sm <= sm_2);
+				  (fs == fs_2) == (ss == ss_2) &&
+				  (fs != fs_2) == (ss != ss_2) &&
+				  (fs >  fs_2) == (ss >  ss_2) &&
+				  (fs >= fs_2) == (ss >= ss_2) &&
+				  (fs <  fs_2) == (ss <  ss_2) &&
+				  (fs <= fs_2) == (ss <= ss_2);
 
-	fm.insert(2);
-	sm.insert(2);
+	fs.insert(2);
+	ss.insert(2);
 	test_result = (test_result) &&
-				  (fm == fm_2) == (sm == sm_2) &&
-				  (fm != fm_2) == (sm != sm_2) &&
-				  (fm >  fm_2) == (sm >  sm_2) &&
-				  (fm >= fm_2) == (sm >= sm_2) &&
-				  (fm <  fm_2) == (sm <  sm_2) &&
-				  (fm <= fm_2) == (sm <= sm_2);
+				  (fs == fs_2) == (ss == ss_2) &&
+				  (fs != fs_2) == (ss != ss_2) &&
+				  (fs >  fs_2) == (ss >  ss_2) &&
+				  (fs >= fs_2) == (ss >= ss_2) &&
+				  (fs <  fs_2) == (ss <  ss_2) &&
+				  (fs <= fs_2) == (ss <= ss_2);
 	return test_result;
 }
 
@@ -493,30 +495,93 @@ static std::string test_name_table[N_SET_TEST] = {
 	"SWAP TEST",		"COUNT TEST",
 	"FIND TEST",		"EQUAL_RANGE TEST",
 	"LOWER_BOUND TEST",	"UPPER_BOUND TEST",
-	"OBSERVERS TEST",	"compARE OPERATORS TEST"
+	"OBSERVERS TEST",	"COMPARE OPERATORS TEST"
 };
 
-// stress test
-//
-// rbtree test
-//void	rbtree(void){
-//	ft::set<char>	s;
-	//insert loop
-	//delete loop
-//}
+static bool stress_test(void){
 
-//bool	stress_test(void){
+	long	time_std = get_time();
+	std_set ss;
+	for(int i = 0; i < 1e7; i++)
+		ss.insert(rand());
+	ss.erase(ss.begin(),ss.end());
 
+	time_std = get_time() - time_std;
+	long	time_ft = get_time();
+	ft_set fs;
+	for(int i = 0; i < 1e7; i++)
+		fs.insert(rand());
+	fs.erase(fs.begin(),fs.end());
 
-//}
+	time_ft = get_time() - time_ft;
+	return (time_ft < time_std * 10) ? true : false;
+}
+
+static void rbtree_insert( ft::set<char>& s ) {
+
+    while( 1 ) {
+
+        std::cout << ">> insert key: ";
+        std::getline( std::cin, buffer );
+
+	    if ( buffer == "" ) return ;
+		if (buffer[0] >= 'a' && buffer[0] <= 'z' && !buffer[1]) {
+        	s.insert( buffer[0] );
+        	print( s );
+		}
+    }
+}
+
+static void    rbtree_erase( ft::set<char>& s ) {
+
+    while ( 1 ) {
+
+        std::cout << ">> insert key: ";
+        std::getline( std::cin, buffer );
+
+        if ( buffer == "" ) return ;
+		if (buffer[0] >= 'a' && buffer[0] <= 'z' && !buffer[1]) {
+        	s.erase( buffer[0] );
+        	print( s );
+		}
+    }
+}
+
+static void rbtree( void ) {
+	char *ptr;
+    ft::set<char> s;
+    static void ( *test_table[2] )( ft::set<char>& ) = { rbtree_insert, rbtree_erase };
+
+    while ( 1 ) {
+
+        std::cout << "[ 0 - insert ]\n"
+        		  << "[ 1 - delete ]\n"
+		          << "[ 2 - return ]\n";
+        while ( 1 ) {
+
+            std::cout << ">> ";
+            std::getline( std::cin, buffer );
+			int id = strtol( buffer.c_str( ), &ptr, 0 );
+			if ( !*ptr && (id == 0 || id == 1) ) {
+
+				test_table[id]( s );
+                break ;
+			}
+			if ( !*ptr && id == 2 ) return ;
+        }
+    }
+}
 
 void set_tests(void){
 	static std::string buffer;
 	std::cout << "[ set test: compare behaviour with std::set ]\n\n";
-	for (int i = 0; i < N_SET_TEST; i++)
-		std::cout << std::setw(30) << test_name_table[i] << ": " << ((func_table[i])() ? OK : KO) << "\n";
-	std::cout << "\n< demo rb ? (y/n) >";
+	for (int i = 0; i < N_SET_TEST; i++) {
+		std::cout << std::setw(30) << test_name_table[i] << ": "; std::cout.flush();
+		std::cout << ((func_table[i])() ? OK : KO) << "\n";
+	}
+	std::cout << "\n< performance test... : "; std::cout.flush();
+	std::cout << ((stress_test()) ? OK : KO) << " >\n";
+	std::cout << "\n< demo rb ? (y/n) > ";
 	std::getline(std::cin,buffer);
-	//if(buffer[0] == 'y' && !buffer[1]) rbtree();
-	//std::cout << "\n< performance test... : " << ((stress_test()) ? OK : KO) << " >\n";
+	if (buffer[0] == 'y' && !buffer[1]) rbtree();
 }

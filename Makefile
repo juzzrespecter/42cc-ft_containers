@@ -27,11 +27,11 @@ SRC_TEST = tester.cpp \
 OBJ_TEST = $(patsubst %.cpp, $(DIR_OBJ)%.o, $(SRC_TEST))
 HEADER_TEST = $(DIR_TEST)tester.hpp
 
-NAME = stlft.a
-TEST = ft_containers_test
+FT_CONTAINERS	= std_containers
+STD_CONTAINERS	= ft_containers
+TEST			= ft_containers_test
 
 RM   = rm -rf
-AR	 = ar rcs
 CXX  = clang++
 CXXFLAGS = -Wall -Werror -Wextra -std=c++98
 DEBUG	 = -fsanitize=address -g3
@@ -41,18 +41,20 @@ RED   = "\033[31m"
 END   = "\033[0m"
 
 OK	  = $(GREEN) "( ͡° ͜ʖ ͡°)" $(END)
-KO 	  = $(RED) ¯\_(ツ)_/¯ $(END)
+KO 	  = $(RED) "¯\_(ツ)_/¯" $(END)
 
-all:	$(NAME)
+all:	$(FT_BIN)
 
-$(NAME):	$(OBJ) $(HEADER)
-	@$(AR) $(NAME) $(OBJ)
-	@echo $(GREEN) "$(NAME) created successfully" $(END)
+$(FT_BIN)	$(HEADER) $(FT_OBJ)
+	@$(CXX) $(CXXFLAGS) $(DEBUG) -o $(FT_BIN) 
+
+$(STD_BIN)	$(HEADER) $(STD_OBJ)
+	@$(CXX) $(CXXFLAGS) $(DEBUG) -o $(FT_BIN) 
 
 test:	$(TEST)
 
-$(TEST):	$(NAME) $(OBJ_TEST) $(HEADER_TEST)
-	@$(CXX) $(CXXFLAGS) $(DEBUG) -o $(TEST) $(OBJ_TEST) $(NAME)
+$(TEST):	$(OBJ_TEST) $(HEADER_TEST) $(HEADER)
+	@$(CXX) $(CXXFLAGS) $(DEBUG) -o $(TEST) $(OBJ_TEST)
 	@echo $(GREEN) "$(TEST) created successfully" $(END)
 
 $(DIR_OBJ)%.o: $(DIR_TEST)%.cpp $(HEADER_TEST)
@@ -73,12 +75,12 @@ $(SRC):
 	@echo $(KO) "\t $(SRC): file not found."
 
 clean:
-	@echo " removed $(NAME)"
-	@echo " removed $(TEST)"
+	@echo $(KO) "\t removed $(NAME)"
+	@echo $(KO) "\t removed $(TEST)"
 	@$(RM) $(NAME) $(TEST)
 
 fclean: clean
-	@echo " removed $(DIR_OBJ)"
+	@echo $(KO) "\t removed $(DIR_OBJ)"
 	@$(RM) $(DIR_OBJ)
 
 re:	fclean all

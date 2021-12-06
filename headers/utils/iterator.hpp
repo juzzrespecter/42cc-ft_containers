@@ -18,7 +18,6 @@
 
 namespace ft {
 
-/* takes defined typedefs of Iterator */
 template< class Iterator >
 class iterator_traits {
 
@@ -31,7 +30,6 @@ class iterator_traits {
 
 };
 
-/* provides typedefs to pointers as iterators */
 template< class T >
 class iterator_traits< T* > {
 
@@ -44,7 +42,6 @@ class iterator_traits< T* > {
 
 };
 
-/* same as above specialization, for const pointers */
 template< class T >
 class iterator_traits< const T* > {
 
@@ -57,7 +54,6 @@ class iterator_traits< const T* > {
 
 };
 
-/* iterator wrapper, reverses increment / decrement calls */
 template< class Iterator >
 class reverse_iterator {
 

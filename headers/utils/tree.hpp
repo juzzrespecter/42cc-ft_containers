@@ -13,12 +13,12 @@
 #ifndef __TREE_HPP__
 #define __TREE_HPP__
 
+#include <iostream> // delete!!
+
 #include "utility.hpp"
 #include "iterator.hpp"
 #include "algorithm.hpp"
 #include "type_traits.hpp"
-#include <limits> // why??
-#include <functional> // why??
 
 namespace ft {
 
@@ -27,57 +27,41 @@ enum { BLACK, RED } color_id;
 enum { LEFT, RIGHT } child_id;
 
 template< class T,
-		  class Compare = std::less< T >,
-		  class Alloc = std::allocator< T > 
+		  class Compare = std::less< T >
 		>
 class node {
 
 	public:
 		typedef T			 value_type;
 		typedef Compare		 value_compare;
-		typedef Alloc		 allocator_type;
 
 		node* 		parent;
 		node* 		child[2];
 
 		node(	const value_type& value = value_type( ),
-			  	const value_compare& comp = value_compare( ),
-			  	const allocator_type& alloc = allocator_type( ) ) : 
+			  	const value_compare& comp = value_compare( ) ) : 
 			parent( ), 
 			child( ),
-			//node_value( value ), 
+			node_value( value ), 
 			node_comp( comp ),	
-			node_color( RED ),	
-			node_alloc( alloc ) { 
-
-			node_alloc.construct( &node_value, value );
-		}
+			node_color( RED ) { }
 
 		node(	const node& other ) : 
 			parent( ),
 			child( ),
-			//node_value( other.node_value ),
+			node_value( other.node_value ),
 			node_comp( other.node_comp ),
-			node_color( other.color( ) ),
-			node_alloc( other.node_alloc ) {
-
-			node_alloc.construct( &node_value, other.node_value );
-		}
+			node_color( other.color( ) ) { }
 
 		node& operator=( const node& other ) {
 
 			if ( this == &other ) return *this;
 
-			node_alloc = other.get_allocator( );
-			node_alloc.destroy( &node_value );
-			node_alloc.construct( &node_value, other.node_value );
+			node_value( other.node_value );
 			return *this;
 		}
 
-		~node( ) { 
-
-			node_alloc.destroy( &node_value );
-		}
+		~node( ) { }
 
 		const int&	color( void ) const { 
 			
@@ -92,10 +76,6 @@ class node {
 			node_color = color; 
 		}
 
-		allocator_type	get_allocator( void ) const { 
-			
-			return allocator_type( node_alloc );
-		}
 		value_compare	value_comp( void ) const { 
 			
 			return node_comp; 
@@ -140,7 +120,6 @@ class node {
 		value_type		node_value;
 		value_compare	node_comp;
 		int				node_color;
-		allocator_type	node_alloc;
 };
 
 template< class Node, class T >
@@ -154,14 +133,13 @@ class _tree_iterator {
 		typedef typename ft::iterator_traits< T >::pointer			pointer;
 		typedef typename ft::iterator_traits< T >::reference		reference;
 
-		explicit _tree_iterator( Node* 		 current_node = NULL, 
-							     Node*const* root_addr = NULL ) :
-			_current_node( current_node ), _root_addr( root_addr ) { }
+		explicit _tree_iterator( Node* 	n_ptr = NULL, Node*	last_node = NULL ) :
+			_n( n_ptr ), _last_node( last_node ) { }
 
 		_tree_iterator( const _tree_iterator& other ) { 
 
-			_current_node = other.base( );
-			_root_addr = other.root( );
+			_n = other.base( );
+			_last_node = other.get_last_node( );
 		}
 
 		template< class U >
@@ -169,8 +147,8 @@ class _tree_iterator {
 						typename ft::enable_if< !ft::is_const< U >::value, U >::type* const_switch = NULL ) {
  
 			( void )const_switch;
-			_current_node = other.base( );
-			_root_addr = other.root( );
+			_n = other.base( );
+			_last_node = other.get_last_node( );
 		}
 	
 		~_tree_iterator( ) { }
@@ -178,25 +156,25 @@ class _tree_iterator {
 		_tree_iterator&		operator=( const _tree_iterator& other ) {
 
 			if ( this == &other ) return *this;
-			_current_node = other._current_node;
-			_root_addr = other._root_addr;
+			_n = other._n;
+			_last_node = other._last_node;
 			return *this;
 		}
 
 		_tree_iterator&		operator++( void ) {
 
-			if ( _current_node->child[ RIGHT ] ) {
+			if ( _n->child[ RIGHT ] ) {
 
-				_current_node = _current_node->child[ RIGHT ];
-				while ( _current_node->child[ LEFT ] ) _current_node = _current_node->child[ LEFT ];
+				_n = _n->child[ RIGHT ];
+				while ( _n->child[ LEFT ] ) _n = _n->child[ LEFT ];
 				return *this;
 			}
-			while ( _current_node->parent ) {
+			while ( _n->parent ) {
 
-				if ( *_current_node < *_current_node->parent ) break ;
-				_current_node = _current_node->parent;
+				if ( *_n < *_n->parent ) break ;
+				_n = _n->parent;
 			}
-			_current_node = _current_node->parent;
+			_n = _n->parent;
 			return *this;
 		}
 
@@ -210,23 +188,23 @@ class _tree_iterator {
 
 		_tree_iterator&		operator--( void ) {
 
-			if ( _current_node == NULL ) {
+			if ( _n == NULL ) {
 
-				_current_node = *_root_addr;
-				while ( _current_node->child[ RIGHT ] ) _current_node = _current_node->child[ RIGHT ];
+				_n = _last_node->parent;
+				while ( _n->child[ RIGHT ] ) _n = _n->child[ RIGHT ];
 				return *this;
 			}
-			if ( _current_node->child[ LEFT ] ) {
+			if ( _n->child[ LEFT ] ) {
 
-				_current_node = _current_node->child[ LEFT ];
-				while ( _current_node->child[ RIGHT ] ) _current_node = _current_node->child[ RIGHT ];
+				_n = _n->child[ LEFT ];
+				while ( _n->child[ RIGHT ] ) _n = _n->child[ RIGHT ];
 				return *this;
 			}
-			while ( *_current_node < *_current_node->parent ) {
+			while ( *_n < *_n->parent ) {
 
-				_current_node = _current_node->parent;
+				_n = _n->parent;
 			}
-			_current_node = _current_node->parent;
+			_n = _n->parent;
 			return *this;
 		}
 
@@ -238,23 +216,23 @@ class _tree_iterator {
 			return tmp;
 		}
 
-		reference	operator*( void ) const { return *( *_current_node ); }
-		pointer		operator->( void ) const { return &( *( *_current_node ) ); }
+		reference	operator*( void ) const { return *( *_n ); }
+		pointer		operator->( void ) const { return &( *( *_n ) ); }
 
 		friend bool operator==( const _tree_iterator& lhs, const _tree_iterator& rhs ) {
 
-			return ( lhs._current_node == rhs._current_node && 
-					 lhs._root_addr == rhs._root_addr );
+			return ( lhs._n == rhs._n && 
+					 lhs._last_node == rhs._last_node );
 		}
 
 		friend bool operator!=( const _tree_iterator& lhs, const _tree_iterator& rhs ) { return !( lhs == rhs ); }
 
-		Node*			base( void ) const { return _current_node; }
-		Node*const* 	root( void ) const { return _root_addr; }
+		Node*	base( void ) const { return _n; }
+		Node*	get_last_node( void ) const { return _last_node; }
 
 	private:
-		Node*		_current_node;
-		Node*const*	_root_addr;
+		Node*		_n;
+		Node*		_last_node;
 };
 
 template< class T,
@@ -267,29 +245,32 @@ class _tree {
 		typedef T			 value_type;
 		typedef Compare      value_compare;
 		typedef size_t       size_type;
-		typedef Alloc		 allocator_node_type;
 
-		typedef ft::node< value_type, value_compare, allocator_node_type  >	node;
-
+		typedef ft::node< value_type, value_compare  >		node;
 		typedef _tree_iterator< node, value_type* >			iterator;
 		typedef _tree_iterator< node, const value_type* >	const_iterator;
 
-		typedef typename Alloc::template rebind< ft::node< T, Compare > >::other	allocator_type;
-		typedef typename ft::iterator_traits< iterator >::difference_type			difference_type;
+		typedef typename Alloc::template rebind< node >::other				allocator_type;
+		typedef typename ft::iterator_traits< iterator >::difference_type	difference_type;
 
 		explicit _tree( const value_compare& comp = value_compare( ),
 			            const allocator_type& alloc = allocator_type( ) ) : 
-			_tree_root( ), _tree_size( ), _tree_comp( comp ), _tree_alloc( alloc ) { }
+			_tree_root( ), _tree_size( ), _tree_comp( comp ), _tree_alloc( alloc ) { 
+
+				_last_node = _tree_alloc.allocate( 1 );
+			}
 
 		_tree( const _tree& other ) :
 			_tree_root( ), _tree_size( ), _tree_comp( other._tree_comp ), _tree_alloc( other._tree_alloc ) {
 
+			_last_node = _tree_alloc.allocate( 1 );
 			*this = other;
 		}
 
 		~_tree( ) {
 
 			if ( _tree_root ) _delete_tree( _tree_root );
+			_tree_alloc.deallocate( _last_node, 1 );
 		}
 
 		_tree& operator=( const _tree& other ) { 
@@ -300,6 +281,7 @@ class _tree {
 				_delete_tree( _tree_root );
 			}
 			_tree_root = _copy_tree( other.root( ) );
+			_last_node->parent = _tree_root;
 			_tree_size = other.size( );
 			return *this;
 		}
@@ -309,7 +291,7 @@ class _tree {
 			node*	_first = _tree_root;
 
 			while ( _first && _first->child[ LEFT ] ) _first = _first->child[ LEFT ];
-			return iterator( _first, &_tree_root );
+			return iterator( _first, _last_node );
 		}
 
 		const_iterator begin( void ) const {
@@ -317,17 +299,17 @@ class _tree {
 			node*	_first = _tree_root;
 
 			while ( _first && _first->child[ LEFT ] ) _first = _first->child[ LEFT ];
-			return const_iterator( _first, &_tree_root );
+			return const_iterator( _first, _last_node );
 		}
 
 		iterator end( void ) {
 
-			return iterator( NULL, &_tree_root );
+			return iterator( NULL, _last_node );
 		}
 
 		const_iterator end( void ) const {
 
-			return const_iterator( NULL, &_tree_root );
+			return const_iterator( NULL, _last_node );
 		}
 
 		bool	empty( void ) const {
@@ -343,13 +325,14 @@ class _tree {
 		size_type	max_size( void ) const {
 
 			return std::min< size_type >( std::numeric_limits< difference_type >::max( ),
-										   _tree_node_alloc.max_size( ) ); // test why does not work
+										  get_allocator( ).max_size( ) );
 		}
 
 		void	clear( void ) {
 
 			_delete_tree( root( ) );
 			_tree_root = NULL;
+			_last_node->parent = NULL;
 			_tree_size = 0;
 		}
 
@@ -367,7 +350,7 @@ class _tree {
 			node*	n = _new_node( hint_it.base( ), value );
 
 			_insert_node_rb( n );
-			return ft::pair< iterator, bool >( iterator( n, &_tree_root ), true );
+			return ft::pair< iterator, bool >( iterator( n, _last_node ), true );
 		}
 
 		/*
@@ -384,7 +367,7 @@ class _tree {
 		 * if insertion cannot be optimized, call insert( value ) overload.
 		 */
 
-		iterator	insert( iterator hint, const value_type& value ) {
+		iterator	insert( const_iterator hint, const value_type& value ) {
 
 			node*	n;
 
@@ -396,24 +379,24 @@ class _tree {
 					n = _new_node( ( --end( ) ).base( ), value );
 					_insert_node_rb( n );
 					++_tree_size;
-					return iterator( n, &_tree_root );
+					return iterator( n, _last_node );
 				}
 				else return insert( value ).first;
 			}
-			if ( *hint == value ) return hint;
+			if ( *hint == value ) return iterator( hint.base( ), hint.get_last_node( ) );
 			if ( hint == begin( ) && value_comp( )( value, *hint ) ) {
 
 				n = _new_node( ( begin( ) ).base( ), value );
 				_insert_node_rb( n );
 				++_tree_size;
-				return iterator( n, &_tree_root );
+				return iterator( n, _last_node );
 			}
 			if ( value_comp( )( value, *hint ) && value_comp( )( *( --hint ), value ) ) {
 
 				n = _new_node( _find_in_subtree( hint.base( ), value ), value );
 				_insert_node_rb( n );
 				++_tree_size;
-				return iterator( n, &_tree_root );
+				return iterator( n, _last_node );
 			}
 			return insert( value ).first;
 		}
@@ -428,7 +411,7 @@ class _tree {
 			return ERASE_SUCCESS;
 		}
 
-		iterator	erase( iterator it ) {
+		iterator	erase( const_iterator it ) {
 
 			node*	_ptr = it.base( );
 			node*	_nxt;
@@ -439,6 +422,7 @@ class _tree {
 				_tree_alloc.destroy( _ptr );
 				_tree_alloc.deallocate( _ptr, 1 );
 				_tree_root = NULL;
+				_last_node->parent = NULL;
 				return end( );
 			}
 
@@ -448,34 +432,35 @@ class _tree {
 			_delete_node_cases( _ptr );
 			_tree_alloc.destroy( _ptr );
 			_tree_alloc.deallocate( _ptr, 1 );
-			return iterator( _nxt, &_tree_root );
+			return iterator( _nxt, _last_node );
 		}
 
 		void	swap( _tree& other ) {
 
-			node*		_aux_root;
-			size_type	_aux_size;
+			enum aux_id { ROOT, LAST_NODE, SIZE };
 
-			_aux_root = _tree_root;
-			_aux_size = _tree_size;
+			node*		_aux_n[ SIZE ] = { _tree_root, _last_node };
+			size_type	_aux_size = _tree_size;
 
 			_tree_root = other._tree_root;
-			other._tree_root = _aux_root;
-
+			_last_node = other._last_node;
 			_tree_size = other._tree_size;
+
+			other._tree_root = _aux_n[ ROOT ];
+			other._last_node = _aux_n[ LAST_NODE ];
 			other._tree_size = _aux_size;
 		}
 
 		iterator find( const value_type& value ) {
 
 			node	*n = _find_in_subtree( _tree_root, value );
-			return iterator( n, &_tree_root );
+			return iterator( n, _last_node );
 		}
 
 		const_iterator find( const value_type& value ) const {
 
 			node	*n = _find_in_subtree( _tree_root, value );
-			return const_iterator( n, &_tree_root );
+			return const_iterator( n, _last_node );
 		}
 
 		node* root( void ) const { 
@@ -488,15 +473,19 @@ class _tree {
 			return _tree_comp;
 		}
 
+		allocator_type	get_allocator( void ) const { 
+			
+			return _tree_alloc;
+		}
+
 	private:
-		node*       		_tree_root; // root addr needs to be portable when swapping
+		node*       		_tree_root;
+		node*				_last_node;
 		size_type			_tree_size;
 		value_compare		_tree_comp;
 		allocator_type		_tree_alloc;
-		allocator_node_type _tree_node_alloc;
 
 		typedef	void ( _tree::*rb_cases )( node* n );
-
 
 		/************************************ ROTATE ************************************/
 
@@ -508,6 +497,7 @@ class _tree {
 			if ( old_root == root( ) ) {
 
 				_tree_root = new_root;
+				_last_node->parent = _tree_root;
 			} else {
 
 				old_root->parent->child[ whoami( old_root ) ] = new_root;
@@ -535,13 +525,8 @@ class _tree {
 		node*	_find_in_subtree( node* _n, const value_type& value ) const {
 
 			if ( !_n ) return NULL;
+			node*	_next_n;
 
-			//iterator	_it( subt_root, &_tree_root );
-			node*		_next_n;
-			//node*	next_subt_root;
-			//node	comp_aux( value, _tree_comp ); -> segfaults !!
-
-			//while ( *subt_root != comp_aux ) {
 			while ( value_comp( )( *( *_n ), value ) || 
 				    value_comp( )( value, *( *_n ) ) ) {
 
@@ -667,6 +652,7 @@ class _tree {
 			if ( n == root( ) ) {
 
 				_tree_root = child;
+				_last_node->parent = _tree_root;
 			} else {
 
 				n->parent->child[ whoami( n ) ] = child;
@@ -724,24 +710,27 @@ class _tree {
 			       	( _n2->parent ) ? whoami( _n2 ) : -1 
 			};
 
-			_n1->parent = ( _n2->parent == _n1 ) ? _n2 : _n2->parent; // loop OK
+			_n1->parent = ( _n2->parent == _n1 ) ? _n2 : _n2->parent;
 			_n1->child[ LEFT ] = _n2->child[ LEFT ];
 			_n1->child[ RIGHT ] = _n2->child[ RIGHT ];
 
 			_n2->parent = _aux_n[0];
-			_n2->child[ LEFT ] = ( _aux_n[1] == _n2 ) ? _n1 : _aux_n[1]; // loop OK
-			_n2->child[ RIGHT ] = ( _aux_n[2] == _n2 ) ? _n1 : _aux_n[2]; // loop OK
+			_n2->child[ LEFT ] = ( _aux_n[1] == _n2 ) ? _n1 : _aux_n[1];
+			_n2->child[ RIGHT ] = ( _aux_n[2] == _n2 ) ? _n1 : _aux_n[2];
 
-			if ( _n1->parent ) _n1->parent->child[ _n_id[1] ] = _n1;//( _n1->parent->child[ _n_id[1] ] == _n1 ) ? _n2 : _n1; // loop OK
+			if ( _n1->parent ) _n1->parent->child[ _n_id[1] ] = _n1;
 			if ( _n1->child[ LEFT ] ) _n1->child[ LEFT ]->parent = _n1;
 			if ( _n1->child[ RIGHT ] ) _n1->child[ RIGHT ]->parent = _n1;
 
 			if ( _n2->parent ) _n2->parent->child[ _n_id[0] ] = _n2;
-			if ( _n2->child[ LEFT ] ) _n2->child[ LEFT ]->parent = _n2; // loop
-			if ( _n2->child[ RIGHT ] ) _n2->child[ RIGHT ]->parent = _n2; // loop
+			if ( _n2->child[ LEFT ] ) _n2->child[ LEFT ]->parent = _n2;
+			if ( _n2->child[ RIGHT ] ) _n2->child[ RIGHT ]->parent = _n2;
 
-			if ( _n1 == root( ) ) _tree_root = _n2;
-			//print( *this );
+			if ( _n1 == root( ) ) {
+				
+				_tree_root = _n2;
+				_last_node->parent = _n2;
+			}
 		}
 
 		/********************************************************************************/
@@ -757,30 +746,22 @@ class _tree {
 
 			_tree_root = _tree_alloc.allocate( 1 );
 			_tree_alloc.construct( _tree_root, node_value );
+			_last_node->parent = _tree_root;
 			_tree_root->recolor( );
 			_tree_size++;
-			return	iterator( _tree_root, &_tree_root );
+			return	iterator( _tree_root, _last_node );
 		}
 
 		node*	_new_node( node* _parent_n, const value_type& value ) {
 
 			node*	_new_n = _tree_alloc.allocate( 1 );
-			//node	node_value( value, _tree_comp );
-
 			node	_aux_n( value, _tree_comp );
+
 			_tree_alloc.construct( _new_n, _aux_n );
-			
 			_new_n->parent = _parent_n;
 			_parent_n->child[ ( *_new_n < *_parent_n ) ? LEFT : RIGHT ] = _new_n;
 			return _new_n;
 		}
-		/* 
-			lower bound -> gets next element to key
-			insert node -> parent element to key
-
-			search_node -> search with exact key
-			new_search -> search a relative position within a given key
-		*/
 
 		/* 
 		 * insert cases:

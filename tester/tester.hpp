@@ -108,7 +108,6 @@ void print_recursion( Node* n, int lvl ) {
 	if( lvl ) std::cout << "-----";
 	if ( !n ) {
 		std::cout << "<nil>";
-		usleep(1500);
 		return ;
 	}
 	if( n->color( ) == 1 ) 
@@ -128,7 +127,7 @@ void	print( Tree& tr ) {
 	typename Tree::iterator	it = tr.begin( );
 
 	std::cout << "\n-*****************-\n";
-	print_recursion( *( it.root( ) ), 0 );
+	print_recursion( it.get_last_node( )->parent, 0 );
 	std::cout << "\n-*****************-\n";
 }
 

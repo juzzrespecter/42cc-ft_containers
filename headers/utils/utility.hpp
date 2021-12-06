@@ -12,7 +12,6 @@
 
 #ifndef __UTILITY_HPP__
 #define __UTILITY_HPP__
-#include <iostream>
 
 namespace ft {
 
