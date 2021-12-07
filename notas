@@ -1,4 +1,0 @@
-* usar f::cont con algortimos de std
-* max_size en map ( fallo en algunos casos )
-* max_size en set ( fallo en todos los casos )
-* nueva estructura en makefile
