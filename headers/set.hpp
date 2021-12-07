@@ -12,7 +12,7 @@
 
 #ifndef __SET_HPP__
 #define __SET_HPP__
-#include <functional> // why??
+#include <functional>
 #include <algorithm>
 #include <memory>
 #include "./utils/tree.hpp"

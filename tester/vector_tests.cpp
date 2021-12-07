@@ -651,7 +651,10 @@ static bool stress_test(void){
 void vector_tests(void) {
 	system("clear");
 	std::cout << "\n[ vector test: compare behaviour with std::vector ]\n\n";
-	for (int i = 0; i < N_VECTOR_TEST; i++)
-		std::cout << std::setw(30) << test_name_table[i] << ": " << ((func_table[i])() ? OK : KO) << "\n";
-	std::cout << "\n< performance test... : " << ((stress_test()) ? OK : KO) << " >\n";
+	for (int i = 0; i < N_VECTOR_TEST; i++) {
+		std::cout << std::setw(30) << test_name_table[i] << ": "; std::cout.flush( );
+		std::cout << ((func_table[i])() ? OK : KO) << "\n";
+	}
+	std::cout << "\n< performance test... : " ; std::cout.flush( );
+	std::cout << ((stress_test()) ? OK : KO) << " >\n";
 }

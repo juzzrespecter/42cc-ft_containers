@@ -13,8 +13,6 @@
 #ifndef __TREE_HPP__
 #define __TREE_HPP__
 
-#include <iostream> // delete!!
-
 #include "utility.hpp"
 #include "iterator.hpp"
 #include "algorithm.hpp"
@@ -681,7 +679,7 @@ class _tree {
 			near_child_of( n )->recolor( BLACK );
 			sibling_of( n )->recolor( RED );
 			rotate( sibling_of( n ), !whoami( n ) );
-			_delete_node_rb_case_4( n );
+			_delete_node_rb_case_2( n );
 		}
 
 		void	_delete_node_rb_case_4( node* n ) {
@@ -782,7 +780,7 @@ class _tree {
 		 *				rotate G( n ) in opposite direction,
 		 *				recolor P and G
 		 *
-		 * 	src = https://cs.kangwon.ac.kr/~leeck/file_processing/RED_BLACK_tree.pdf
+		 * 	src = https://cs.kangwon.ac.kr/~leeck/file_processing/red_black_tree.pdf
 		 */
 
 		void _insert_node_rb( node* n ) {

@@ -18,18 +18,11 @@ static void ( *test_table[ N_TEST ] )( void ) = {
 	set_tests
 };
 
-int main( int argc, char *argv[] ) {
+int main( void ) {
 
 	static std::string	buffer;
 	char			*ptr;
 
-	if ( argc != 2 ) { // test rand( ) seed
-		
-		std::cout << "at least one argument needed\n";
-		std::cout << "usage: ./ft_containers_test seed\n";
-		return EXIT_FAILURE;
-	}
-	srand( std::atoi( argv[1] ) );
 	while ( 1 ) {
 
 		system( "clear" );
