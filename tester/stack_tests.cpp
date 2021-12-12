@@ -171,6 +171,6 @@ static bool	(*func_table[N_STACK_TEST])(void) = {
 
 void stack_tests(void){
 	std::cout << "[ stack test: compare behaviour with std::stack ]\n\n";
-	for (int i = 0; i < N_SET_TEST; i++)
+	for (int i = 0; i < N_STACK_TEST; i++)
 		std::cout << std::setw(30) << test_name_table[i] << ": " << ((func_table[i])() ? OK : KO) << "\n";
 }
