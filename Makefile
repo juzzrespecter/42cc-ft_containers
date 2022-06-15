@@ -50,10 +50,6 @@ $(DIR_OBJ)%.o: $(DIR_SRC)%.cpp $(HEADER)
 	@mkdir -p $(DIR_OBJ)
 	@mv $(@F) $(DIR_OBJ)
 
-test:
-	@make -C tester/
-	@mv tester/ft_containers_test .
-
 $(SRC):
 	@echo $(KO) "\t $(SRC): file not found."
 
