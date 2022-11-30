@@ -40,22 +40,20 @@ KO 	  = $(RED) "¯\_(ツ)_/¯" $(END)
 
 all:	$(NAME)
 
-$(NAME):	$(OBJ) $(INC)
+$(NAME):	$(OBJ) $(HEADER)
 	@$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJ)
 	@echo $(OK) "\t $(NAME) created successfully"
 
-$(DIR_OBJ)%.o: $(DIR_SRC)%.cpp $(HEADER)
-	@$(CXX) $(CXXFLAGS) -c $< -I$(DIR_HEADER)
+$(DIR_OBJ)%.o: $(DIR_SRC)%.cpp 
+	@mkdir -p $(@D)
+	@$(CXX) $(CXXFLAGS) -c $< -o $@ -I$(DIR_HEADER)
 	@echo $(OK) "\t $< compiled successfully"
-	@mkdir -p $(DIR_OBJ)
-	@mv $(@F) $(DIR_OBJ)
 
 $(SRC):
 	@echo $(KO) "\t $(SRC): file not found."
 
 clean:
 	@echo $(KO) "\t removed $(NAME)"
-	@echo $(KO) "\t removed $(TEST)"
 	@$(RM) $(NAME) $(TEST)
 
 fclean: clean
